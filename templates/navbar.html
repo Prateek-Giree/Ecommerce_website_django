@@ -1,0 +1,108 @@
+{% load static %}
+
+<div class="top-bar">
+  <div class="container">
+    <div class="top-links">
+      <a href="#">About Us</a>
+      <a href="#">My Account</a>
+      <a href="#">Wishlist</a>
+      <a href="#">Order Tracking</a>
+    </div>
+    <div class="middle">
+      <span class="deals">Super Value Deals - Save more with coupons</span>
+    </div>
+    <div class="top-right">
+      <span>Need help? Call Us: 1800 900</span>
+      <div class="select-wrapper">
+        <select>
+          <option>English</option>
+          <option>Spanish</option>
+        </select>
+      </div>
+      <div class="select-wrapper">
+        <select>
+          <option>USD</option>
+          <option>EUR</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<header class="main-header">
+  <div class="container">
+    <div class="header-content">
+      <a href="#" class="logo"> FastCart </a>
+
+      <div class="search-bar">
+        <select>
+          <option>All Categories</option>
+          <option>Groceries</option>
+          <option>Fresh</option>
+        </select>
+        <input type="search" placeholder="Search for items..." />
+        <button type="submit">Search</button>
+      </div>
+
+      <div class="location-cart">
+        <select class="location-btn">
+          <option disabled selected>
+            <i class="fa fa-location-dot"></i> Your Location 
+          </option>
+          <option>Location 1</option>
+          <option>Location 2</option>
+
+        </select>
+        <div class="cart-icons">
+          <a href="#"><i class="fa-regular fa-heart"></i> Wishlist</a>
+          <a href="#"><i class="fa fa-cart-shopping"></i> Cart</a>
+          <a href="#"><i class="fa-solid fa-user"></i></i> Account</a>
+        </div>
+      </div>
+    </div>
+
+    <nav class="main-nav">
+      <div>
+        <select class="browse-btn">
+          <option disabled selected >Browse Categories</option>
+          <option>Groceries</option>
+          <option>Fresh</option>
+        </select>
+      </div>
+      <div class="nav-links">
+        <a href="#">Deals</a>
+        <a href="#">Home</a>
+        <a href="#">Category</a>
+        <a href="#">Shop</a>
+        <a href="#">Vendors</a>
+        <a href="#">Mega menu</a>
+        <a href="#">Blog</a>
+        <a href="#">Pages</a>
+        <a href="#">Contact</a>
+      </div>
+     
+      <div class="support">
+        <span class="support-phone">1900 - 888 </span> <br>
+        <span class="support-text">24/7 Support Center</span>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Get the navbar element
+  const navbar = document.querySelector('.main-nav');
+  
+  // Set the scroll threshold (you can adjust this value as needed)
+  const stickyOffset = navbar.offsetTop; // or use a custom value like 100px
+
+  // Listen for scroll events
+  window.onscroll = function() {
+    if (window.pageYOffset > stickyOffset) {
+      navbar.classList.add('fixed'); // Add fixed class when scrolled past the navbar
+    } else {
+      navbar.classList.remove('fixed'); // Remove fixed class when at the top
+    }
+  };
+</script>
+
