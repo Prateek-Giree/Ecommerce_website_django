@@ -1,160 +1,191 @@
 @import url("https://fonts.googleapis.com/css2?family=Rajdhani&display=swap");
 * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-  }
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
 
-  /* styling for catogory card */
-  .main{
-    display: flex;
-    flex-direction: row;
-    padding: 1rem 3rem 1rem 3rem;
-    gap: 1.5rem;
+/* styling for catogory card */
+.main {
+  display: flex;
+  flex-direction: row;
+  padding: 1rem 3rem 1rem 3rem;
+  gap: 1.5rem;
+}
+.side {
+  width: 25%;
+  border-radius: 10px;
+  /* padding: 1rem; */
+  font-family: "Rajdhani", sans-serif;
+  color: rgb(54, 54, 49);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
 
-  }
-  .side {
-    width: 25%;
-    border-radius: 10px;
-    /* padding: 1rem; */
-    font-family: "Rajdhani", sans-serif;
-    color: rgb(54, 54, 49);
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  
-  .category-card,
-  .new-product-card {
-    background-color: white; 
-    border-radius: 10px;
-    padding: 1rem;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
-  }
-  
-  .category-card h1,
-  .new-product-card h1 {
-    position: relative;
-    display: inline-block;
-    margin: 1rem;
-  }
-  
-  .category-list,
-  .new-product-list {
-    list-style-type: none;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .category-details,
-  .new-product-details {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 10px;
-  }
-  .category-details a,
-  .new-product-details a{
-    text-decoration: none;
-    color: black;
-    font-size: 1.1rem;
-  }
-  .category-details img,
-  .new-product-details img {
-    width: 30px;
-    height: 30px;
-    object-fit: cover;
-    border-radius: 10px;
-  }
-  
-  .category-card h1::before,
-  .new-product-card h1::before {
-    content: "";
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 50px;
-    height: 2px;
-    background-color: rgb(30, 153, 30);
-  }
+.category-card,
+.new-product-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
 
-  /*Styling for hero section*/
-  
-  .hero {
-    padding: 1rem;
-    width: 100%;
-    height: 60vh;
-    background: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(5, 28, 30, 0.908)),  url(../assets/vegetables.webp) no-repeat center center/cover;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.533);
-    border-radius: 1rem;
-  }
-  
-  .hero-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100%;
-    margin-bottom: 5rem;
-  }
-  .hero .info h1 {
-    font-weight: 600;
-    font-size: 2.5em;
-    color: white;
-    text-shadow: 2px 2px 2px rgb(9, 66, 96);
-  }
-  .hero .info p {
-    margin-bottom: 2rem;
-    font-family: "Courier New", Courier, monospace;
-    color: wheat;
-    font-weight: 400;
-    font-size: 20px;
-    text-shadow: 2px 2px 2px rgb(154, 174, 185);
-  }
-  .button {
-    padding: 5px 10px;
-    background-color: rgb(186, 247, 228);
-    border-radius: 5px;
-    text-decoration: none;
-    color: black;
-    font-size: 1.5em;
-    font-family: "Rajdhani", sans-serif;
-  }
-  .button:hover {
-    background-color: rgb(116, 223, 184);
-    transition: 0.3s;
-  }
+.category-card h1,
+.new-product-card h1 {
+  position: relative;
+  display: inline-block;
+  margin: 1rem;
+}
 
-  /* styling for products */
+.category-list,
+.new-product-list {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+}
 
-  .main .products .navs{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    margin-bottom: 1rem;
-  }
-  .products .navs h1{
-    font-family: "Rajdhani", sans-serif;
-    font-size: 1.5em;
-    font-weight: bold;
-    color: black;
-  }
-  .products .navs .navs-list{
-    background: none;
-    font-weight: bold;
-    font-size:14px;
-    font-family: "Rajdhani", sans-serif;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  .navs .navs-list a{
-    text-decoration: none;
-    color: black;
-  }
+.category-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 10px;
+  padding: 10px;
+  border-radius:10px ;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.533) ;
+}
+.category-details small{
+  display: flex;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  background: rgba(30, 153, 30, 0.546);
+}
+
+.new-product-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 10px;
+  padding: 1rem;
+  border-bottom: 2px solid rgba(49, 49, 45, 0.326);
+}
+.category-details a,
+.new-product-details a {
+  text-decoration: none;
+  color: black;
+  font-size: 1.1rem;
+}
+.category-details img,
+.new-product-details img {
+  width: 40px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.category-card h1::before,
+.new-product-card h1::before {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background-color: rgb(30, 153, 30);
+}
+
+.new-product-details .detail p {
+  font-size: 1rem;
+  color: tomato;
+  font-family: "Rajdhani", sans-serif;
+  font-weight: bold;
+}
+
+/*Styling for hero section*/
+
+.hero {
+  padding: 1rem;
+  width: 100%;
+  height: 60vh;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(5, 28, 30, 0.908)),
+    url(../assets/vegetables.webp) no-repeat center center/cover;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.533);
+  border-radius: 1rem;
+}
+
+.hero-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  margin-bottom: 5rem;
+}
+.hero .info h1 {
+  font-weight: 600;
+  font-size: 2.5em;
+  color: white;
+  text-shadow: 2px 2px 2px rgb(9, 66, 96);
+}
+.hero .info p {
+  margin-bottom: 2rem;
+  font-family: "Courier New", Courier, monospace;
+  color: wheat;
+  font-weight: 400;
+  font-size: 20px;
+  text-shadow: 2px 2px 2px rgb(154, 174, 185);
+}
+.button {
+  padding: 5px 10px;
+  background-color: rgb(186, 247, 228);
+  border-radius: 5px;
+  text-decoration: none;
+  color: black;
+  font-size: 1.5em;
+  font-family: "Rajdhani", sans-serif;
+}
+.button:hover {
+  background-color: rgb(116, 223, 184);
+  transition: 0.3s;
+}
+
+/* styling for products */
+
+.main .products .navs {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  margin-bottom: 1rem;
+}
+.products .navs h1 {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: black;
+}
+.products .navs .navs-list {
+  background: none;
+  font-weight: bold;
+  font-size: 14px;
+  font-family: "Rajdhani", sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.navs .navs-list a {
+  text-decoration: none;
+  color: black;
+}
 /* styling for product card */
 
-.cards{
+.cards {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -179,7 +210,7 @@
   word-wrap: break-word;
 }
 
-.product-item .off{
+.product-item .off {
   border-radius: 5px;
   border-left: 5px solid rgb(252, 43, 78);
   z-index: 100;
@@ -188,7 +219,7 @@
   padding: 5px;
   color: white;
   font-weight: 200;
-  font-family:sans-serif;
+  font-family: sans-serif;
 }
 .product-item img {
   object-fit: fill;
@@ -196,7 +227,7 @@
   height: 200px;
   border-radius: 10px;
 }
-.product-item small{
+.product-item small {
   color: rgba(0, 0, 0, 0.707);
   font-family: "Rajdhani", sans-serif;
   font-size: 0.8em;
@@ -205,13 +236,14 @@
 .product-item h3 {
   font-size: 1rem;
   color: rgba(0, 0, 0, 0.785);
-  font-family:cursive;
+  font-family: cursive;
 }
 .product-item p {
-  font-size:0.8rem;
+  font-size: 0.8rem;
   font-weight: bold;
   color: rgba(0, 0, 0, 0.685);
-  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 .product-grid .product-item .price-btn {
@@ -221,20 +253,21 @@
   margin-top: 10px;
 }
 .product-item span,
-.price span{
+.price span {
   font-weight: bold;
   color: rgb(46, 142, 87);
 }
-.price-btn .add i{
+
+.price-btn .add i {
   color: white;
   padding: 5px;
   border-radius: 5px;
   cursor: pointer;
 }
-.price-btn .btns{
+.price-btn .btns {
   padding: 10px;
 }
-.price-btn .btns a{
+.price-btn .btns a {
   text-decoration: none;
   color: rgba(0, 0, 0, 0.794);
   font-weight: bold;
@@ -242,7 +275,7 @@
   padding: 5px;
   border-radius: 5px;
 }
-.price-btn .add{
+.price-btn .add {
   background: rgb(46, 142, 87);
   color: aliceblue;
 }
