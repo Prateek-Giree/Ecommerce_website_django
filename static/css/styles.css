@@ -81,6 +81,11 @@ html {
   text-decoration: none;
   color: black;
   font-size: 1.1rem;
+  font-weight: bold;
+}
+.category-details a:hover,
+.new-product-details a:hover {
+  color: rgb(30, 153, 30);
 }
 .category-details img,
 .new-product-details img {
@@ -234,7 +239,7 @@ html {
   font-weight: bold;
 }
 .product-item h3 {
-  font-size: 1rem;
+  font-size: 15px;
   color: rgba(0, 0, 0, 0.785);
   font-family: cursive;
 }
@@ -256,6 +261,7 @@ html {
 .price span {
   font-weight: bold;
   color: rgb(46, 142, 87);
+  font-size: 14px;
 }
 
 .price-btn .add i {

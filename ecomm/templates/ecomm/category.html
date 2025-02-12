@@ -1,31 +1,13 @@
 {% load static %}
 <div class="category-card">
-    <h1>Category</h1>
-    <div class="category-list">
-      <div class="category-details">
-        <img src=' {% static "assets/vegetables.webp" %} ' alt="">
-        <a href="#"> Milk and dairy </a>
-        <small>12</small>
-      </div>
-      <div class="category-details">
-        <img src=' {% static "assets/vegetables.webp" %} ' alt="">
-        <a href="#"> Milk and dairy </a>
-        <small>12</small>
-      </div>
-      <div class="category-details">
-        <img src=' {% static "assets/vegetables.webp" %} ' alt="">
-        <a href="#"> Milk and dairy </a>
-        <small>12</small>
-      </div>
-      <div class="category-details">
-        <img src=' {% static "assets/vegetables.webp" %} ' alt="">
-        <a href="#"> Milk and dairy </a>
-        <small>12</small>
-      </div>
-      <div class="category-details">
-        <img src=' {% static "assets/vegetables.webp" %} ' alt="">
-        <a href="#"> Milk and dairy </a>
-        <small>12</small>
-      </div>
+  <h1>Category</h1>
+  <div class="category-list">
+    {% for category in categories %}
+    <div class="category-details">
+      <img src=" {{category.image.url}} " alt="" />
+      <a href="#"> {{ category.name }} </a>
+      <small> {{ category.product_set.count }} </small>
     </div>
+    {% endfor %}
   </div>
+</div>

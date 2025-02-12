@@ -1,8 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
-
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -12,7 +10,6 @@ class Category(models.Model):
         return self.name
 
 
-from django.db import models
 
 
 class Vendor(models.Model):
@@ -34,6 +31,8 @@ class Product(models.Model):
     image = models.ImageField(upload_to="products/")
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    discription = models.TextField(blank=True)
+    tag= models.CharField( blank=True, max_length=100)
 
     def __str__(self):
         return self.name

@@ -1,5 +1,5 @@
-{% extends "base.html" %} {% block title %} FastCart {% endblock title %}
- {% block body %} {% include "navbar.html" %} {% load static %}
+{% extends "base.html" %} {% block title %} FastCart {% endblock title %} 
+{% block body %} {% include "navbar.html" %} {% load static %}
 
 <section class="main">
   <section class="side">
@@ -9,10 +9,10 @@
     <div class="hero-container">
       <div class="info">
         <h1>
-          Fresh Vegitables <br />
+          Fresh Vegetables <br />
           Big Discount
         </h1>
-        <p>save upto 50% off on your first order</p>
+        <p>Save up to 50% off on your first order</p>
         <a class="button" href="">Tap to continue shopping</a>
       </div>
     </div>
@@ -30,166 +30,36 @@
       </div>
 
       <div class="cards">
+        {% for product in recent_50_products %}
         <div class="product-grid">
-          <div class="product-item" id="">
-            <small class="off">-18%</small>
-            <img src="{% static 'assets/vegetables.webp' %}" alt="" />
-            <small>Milk and Dairy</small>
-            <h3>Banana Lassi</h3>
-            By <span>NestFoods</span> <br />
+          <!-- Loop through the recent products -->
+          <div class="product-item">
+            {% if product.new_price %}
+            <small class="off">
+              -{{ product.discount_percentage|floatformat:0 }}%
+            </small>
+            {% endif %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" />
+            <small>{{ product.category.name }}</small>
+            <h3>{{ product.name }}</h3>
+            By <span>{{ product.vendor.name }}</span> <br />
             <div class="price-btn">
               <div class="price">
-                <span>Rs.200</span>
-                <p><s>Rs.220</s></p>
+                <span>Rs.{{ product.new_price|default:product.price }}</span>
+                {% if product.new_price %}
+                <p><s>Rs.{{ product.price }}</s></p>
+                {% endif %}
               </div>
               <div class="btns">
-                <a class="add" href=""><i class="fa fa-cart-shopping"></i> Add</a>
+                <a class="add" href=""
+                  ><i class="fa fa-cart-shopping"></i>Add</a
+                >
                 <a href=""><i class="fa-regular fa-heart"></i></a>
               </div>
             </div>
           </div>
         </div>
-      
-        <div class="product-grid">
-          <div class="product-item" id="">
-            <small class="off">-18%</small>
-            <img src="{% static 'assets/vegetables.webp' %}" alt="" />
-            <small>Milk and Dairy</small>
-            <h3>Banana Lassi</h3>
-            By <span>NestFoods</span> <br />
-            <div class="price-btn">
-              <div class="price">
-                <span>Rs.200</span>
-                <p><s>Rs.220</s></p>
-              </div>
-              <div class="btns">
-                <a class="add" href=""><i class="fa fa-cart-shopping"></i> Add</a>
-                <a href=""><i class="fa-regular fa-heart"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-grid">
-          <div class="product-item" id="">
-            <small class="off">-18%</small>
-            <img src="{% static 'assets/vegetables.webp' %}" alt="" />
-            <small>Milk and Dairy</small>
-            <h3>Banana Lassi</h3>
-            By <span>NestFoods</span> <br />
-            <div class="price-btn">
-              <div class="price">
-                <span>Rs.200</span>
-                <p><s>Rs.220</s></p>
-              </div>
-              <div class="btns">
-                <a class="add" href=""><i class="fa fa-cart-shopping"></i> Add</a>
-                <a href=""><i class="fa-regular fa-heart"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-grid">
-          <div class="product-item" id="">
-            <small class="off">-18%</small>
-            <img src="{% static 'assets/vegetables.webp' %}" alt="" />
-            <small>Milk and Dairy</small>
-            <h3>Banana Lassi</h3>
-            By <span>NestFoods</span> <br />
-            <div class="price-btn">
-              <div class="price">
-                <span>Rs.200</span>
-                <p><s>Rs.220</s></p>
-              </div>
-              <div class="btns">
-                <a class="add" href=""><i class="fa fa-cart-shopping"></i> Add</a>
-                <a href=""><i class="fa-regular fa-heart"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-grid">
-          <div class="product-item" id="">
-            <small class="off">-18%</small>
-            <img src="{% static 'assets/vegetables.webp' %}" alt="" />
-            <small>Milk and Dairy</small>
-            <h3>Banana Lassi</h3>
-            By <span>NestFoods</span> <br />
-            <div class="price-btn">
-              <div class="price">
-                <span>Rs.200</span>
-                <p><s>Rs.220</s></p>
-              </div>
-              <div class="btns">
-                <a class="add" href=""><i class="fa fa-cart-shopping"></i> Add</a>
-                <a href=""><i class="fa-regular fa-heart"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-grid">
-          <div class="product-item" id="">
-            <small class="off">-18%</small>
-            <img src="{% static 'assets/vegetables.webp' %}" alt="" />
-            <small>Milk and Dairy</small>
-            <h3>Banana Lassi</h3>
-            By <span>NestFoods</span> <br />
-            <div class="price-btn">
-              <div class="price">
-                <span>Rs.200</span>
-                <p><s>Rs.220</s></p>
-              </div>
-              <div class="btns">
-                <a class="add" href=""><i class="fa fa-cart-shopping"></i> Add</a>
-                <a href=""><i class="fa-regular fa-heart"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-grid">
-          <div class="product-item" id="">
-            <small class="off">-18%</small>
-            <img src="{% static 'assets/vegetables.webp' %}" alt="" />
-            <small>Milk and Dairy</small>
-            <h3>Banana Lassi</h3>
-            By <span>NestFoods</span> <br />
-            <div class="price-btn">
-              <div class="price">
-                <span>Rs.200</span>
-                <p><s>Rs.220</s></p>
-              </div>
-              <div class="btns">
-                <a class="add" href=""><i class="fa fa-cart-shopping"></i> Add</a>
-                <a href=""><i class="fa-regular fa-heart"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-grid">
-          <div class="product-item" id="">
-            <small class="off">-18%</small>
-            <img src="{% static 'assets/vegetables.webp' %}" alt="" />
-            <small>Milk and Dairy</small>
-            <h3>Banana Lassi</h3>
-            By <span>NestFoods</span> <br />
-            <div class="price-btn">
-              <div class="price">
-                <span>Rs.200</span>
-                <p><s>Rs.220</s></p>
-              </div>
-              <div class="btns">
-                <a class="add" href=""><i class="fa fa-cart-shopping"></i> Add</a>
-                <a href=""><i class="fa-regular fa-heart"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        {% endfor %}
       </div>
     </div>
   </section>

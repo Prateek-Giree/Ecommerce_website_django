@@ -2,39 +2,18 @@
 <div class="new-product-card">
   <h1>New Products</h1>
   <div class="new-product-list">
-
+    
+    {% for product in recent_products %}
     <div class="new-product-details">
-      <img src=' {% static "assets/vegetables.webp" %} ' alt="" />
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" />
+
       <div class="detail">
-        <a href="#"> Milk and dairy </a>
-        <p>Rs 200</p>
+        <a href="#">{{ product.name }}</a>
+
+        <p>Rs {{ product.new_price|default:product.price }}</p>
       </div>
     </div>
-
-
-    <div class="new-product-details">
-      <img src=' {% static "assets/vegetables.webp" %} ' alt="" />
-      <div class="detail">
-        <a href="#"> Milk and dairy </a>
-        <p>Rs 200</p>
-      </div>
-    </div>
-
-    <div class="new-product-details">
-      <img src=' {% static "assets/vegetables.webp" %} ' alt="" />
-      <div class="detail">
-        <a href="#"> Milk and dairy </a>
-        <p>Rs 200</p>
-      </div>
-    </div>
-
-    <div class="new-product-details">
-      <img src=' {% static "assets/vegetables.webp" %} ' alt="" />
-      <div class="detail">
-        <a href="#"> Milk and dairy </a>
-        <p>Rs 200</p>
-      </div>
-    </div>
+    {% endfor %}
     
   </div>
 </div>
