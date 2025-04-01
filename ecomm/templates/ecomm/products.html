@@ -1,0 +1,69 @@
+{% extends "base.html" %} {% block title %} FastCart | Products 
+{% endblock title %} {% block body %} {% include "navbar.html" %} {% load static %}
+
+<section class="breadcrumb">
+  <a href="{% url 'index' %}"><i class="fa fa-house"></i> Home</a>
+  <span>&nbsp;&nbsp; > &nbsp;&nbsp;Products</span>
+</section>
+
+<main class="details">
+  <section class="product-details">
+    <div class="prod">
+      <div class="image">
+        <img
+          src="{{ product.image.url }}"
+          alt="Product image"
+        />
+      </div>
+
+      <div class="info">
+        <span class="discount">-18%</span>
+
+        <h3>{{ product.name }}</h3>
+
+        <div class="prod-price">
+          <span class="p">Rs {{ product.new_price|default:product.price }}</span>
+          <div class="dis">
+            <span class="d">-18% off</span>
+            {% if product.new_price %}
+            <span class="old-price">Rs {{ product.price }}</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <p class="prod-description">This is description</p>
+
+        <form action="" method="POST">
+          <input type="number" name="qty" id="qty" class="qty" />
+          <div class="order-buttons">
+            <button>Add to cart</button>
+            <button>wishlist</button>
+          </div>
+        </form>
+
+        <div class="prod-information">
+          <span
+            >Category: <span style="color: rgb(25, 103, 57)">{{ product.category.name }}</span></span
+          >
+          <span>Tags: <span style="color: rgb(25, 103, 57)"> {{ product.tag }} </span></span>
+          <span
+            >Stock:
+            <span style="color: rgb(25, 103, 57)">10 items in stock</span></span
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="product-vendor">
+    <div class="delivery">
+      <h3>Delivery</h3>
+      <p><i class="fa-solid fa-location-dot"></i> Users Address</p>
+      <hr />
+      <h3>Return & warranty</h3>
+      <p><i class="fa-solid fa-truck"></i> Delivery in 2-3 days</p>
+      <p> <i class="fa-solid fa-wallet"></i> Cash on delivery available</p>
+    </div>
+  </section>
+</main>
+{% endblock body %}

@@ -1,5 +1,5 @@
-{% extends "base.html" %} {% block title %} FastCart {% endblock title %} 
-{% block body %} {% include "navbar.html" %} {% load static %}
+{% extends "base.html" %} {% block title %} FastCart {% endblock title %}
+ {% block body %} {% include "navbar.html" %} {% load static %}
 
 <section class="main">
   <section class="side">
@@ -39,10 +39,17 @@
               -{{ product.discount_percentage|floatformat:0 }}%
             </small>
             {% endif %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" />
-            <small>{{ product.category.name }}</small>
-            <h3>{{ product.name }}</h3>
-            By <span>{{ product.vendor.name }}</span> <br />
+            <a style="text-decoration: none" href=" {% url "products" product.id %} ">
+              <img src="{{ product.image.url }}" alt="{{ product.name }}" />
+              <small>{{ product.category.name }}</small>
+              <h3>{{ product.name }}</h3>
+            </a>
+            By
+            <a style="text-decoration: none" href="">
+              <span>{{ product.vendor.name }}</span>
+            </a>
+            <br />
+
             <div class="price-btn">
               <div class="price">
                 <span>Rs.{{ product.new_price|default:product.price }}</span>
@@ -50,6 +57,7 @@
                 <p><s>Rs.{{ product.price }}</s></p>
                 {% endif %}
               </div>
+
               <div class="btns">
                 <a class="add" href=""
                   ><i class="fa fa-cart-shopping"></i>Add</a

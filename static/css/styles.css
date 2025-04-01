@@ -1,4 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Rajdhani&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400..700&display=swap');
+
+
 * {
   padding: 0;
   margin: 0;
@@ -284,4 +287,159 @@ html {
 .price-btn .add {
   background: rgb(46, 142, 87);
   color: aliceblue;
+}
+
+
+/* Product page  */
+
+.breadcrumb{
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  padding: 0.5rem 5rem;
+  margin-bottom:1rem;
+  font-size: 19px;
+ font-family: "Markazi Text", serif;
+ color: #23a865;
+}
+.breadcrumb a{
+  text-decoration: none;
+  color: #23a865;
+}
+
+.details{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 1rem 5rem;
+  gap: 2rem;
+}
+
+.product-details .prod{
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+}
+
+ .prod .image img{
+  border-radius: 20px;
+  width: 400px;
+  height: 400px;
+  object-fit: cover;
+ }
+
+ .prod .info{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+ }
+ .info .discount{
+   color: red;
+   font-size: 12px;
+   background-color: rgba(255, 99, 71, 0.385);
+   width: 35px;
+   padding: 5px;
+   border-radius: 5px;
+ }
+
+ .info h3{
+    font-size: 1.5rem;
+    font-weight: 500;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ }
+
+ .prod-price{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+ }
+
+ .prod-price .p{
+    font-size: 2rem;
+    font-weight: bold;
+    color: rgb(3, 169, 72);
+ }
+
+ .prod-price .dis{
+  display: flex;
+  flex-direction: column;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ }
+
+ .dis .d{
+    font-size: 1rem;
+    color:rgba(255, 166, 0, 0.852);
+    font-weight: 550;
+ }
+
+ .dis .old-price{
+    text-decoration: line-through;
+    color: rgba(0, 0, 0, 0.685);
+    font-size: 1.5rem;
+    color: gray;
+    font-weight: 550;
+ }
+
+ .info .prod-description{
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: rgba(0, 0, 0, 0.685);
+    font-weight: 550;
+ }
+
+ input[type="number"]{
+    width: 100px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.461);
+ }
+ 
+ .order-buttons{
+  margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+ }
+
+  .order-buttons button{
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+  }
+
+  .order-buttons :nth-child(1){
+    background-color:rgb(13, 162, 75);
+    color: white;
+  }
+  .order-buttons button:hover{
+    transform: translate(0, -5px);
+    transition: 0.3s;
+  }
+  .info .prod-information{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1rem;
+  }
+
+
+.details .product-vendor .delivery{
+  background-color:rgba(214, 214, 214, 0.467);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-radius: 10px;
+  color: rgba(0, 0, 0, 0.685);
+  font-weight: 550;
+  font-size: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.delivery h3{
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+  font-family: 'Rajdhani', sans-serif;
 }

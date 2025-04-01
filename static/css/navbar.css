@@ -41,7 +41,7 @@ body {
 }
 
 .deals {
-    color: #3BB77E;
+    color: #23a865;
 }
 
 .select-wrapper {
@@ -70,7 +70,8 @@ body {
 }
 
 .logo img {
-    height: 48px;
+    width: 60px;
+    height: auto;
 }
 
 .search-bar {
@@ -96,7 +97,7 @@ body {
 
 .search-bar button {
     padding: 10px 20px;
-    background: #3BB77E;
+    background: #23a865;
     color: white;
     border: none;
     border-radius: 0 4px 4px 0;
@@ -155,7 +156,7 @@ body {
 
 .browse-btn {
     padding: 10px 20px;
-    background: #3BB77E;
+    background: #23a865;
     color: white;
     border: none;
     border-radius: 4px;
@@ -170,7 +171,7 @@ body {
 
 
 .support-phone {
-    color: #3BB77E;
+    color: #23a865;
     font-weight: bold;
 }
 
