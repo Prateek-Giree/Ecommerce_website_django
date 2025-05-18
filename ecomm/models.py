@@ -38,8 +38,11 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
+    def discount_percentage(self):
+        if self.new_price and self.price:
+            return round(((self.price - self.new_price) / self.price) * 100, 2)
+        return 0
 
-    from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -63,7 +66,6 @@ class Wishlist(models.Model):
         return f"{self.user.username} - {self.product.name}"
 
 
-from django.contrib.auth.models import User
 
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')

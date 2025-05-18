@@ -10,14 +10,6 @@ def index(request):
     recent_products = Product.objects.order_by("-id")[:7]
     recent_50_products = Product.objects.order_by("-id")[:50]
 
-    for product in recent_50_products:
-        if product.new_price and product.price:
-            product.discount_percentage = (
-                (product.price - product.new_price) / product.price
-            ) * 100
-        else:
-            product.discount_percentage = 0  # No discount if no new_price or price
-
     context = {
         "categories": categories,
         "recent_products": recent_products,
@@ -26,38 +18,17 @@ def index(request):
     return render(request, "ecomm/index.html", context)
 
 
-def products(request,pk):
-    
-    product= Product.objects.filter(id=pk)
-    categories = Category.objects.annotate(product_count=Count("product"))
-    related_products = Product.objects.filter(category=product[0].category).exclude(id=pk)[:4]
-
+def products(request, pk):
+    product_qs = Product.objects.filter(id=pk)
     try:
-        product = product[0]
+        product = product_qs[0]
     except IndexError:
-        product = None
-    if product is None:
         return render(request, "ecomm/404.html")
-    # Calculate discount percentage for the main product
-    if product.new_price and product.price:
-        product.discount_percentage = (
-            (product.price - product.new_price) / product.price
-        ) * 100
-    else:
-        product.discount_percentage = 0 
 
-
-    # Calculate discount percentage for related products
-    for product in related_products:
-        if product.new_price and product.price:
-            product.discount_percentage = (
-                (product.price - product.new_price) / product.price
-            ) * 100
-        else:
-            product.discount_percentage = 0  # No discount if no new_price or price
-
+    categories = Category.objects.annotate(product_count=Count("product"))
+    related_products = Product.objects.filter(category=product.category).exclude(id=pk)[:12]
     vendor = product.vendor
-    
+
     context = {
         "product": product,
         "vendor": vendor,
@@ -65,3 +36,5 @@ def products(request,pk):
         "related_products": related_products,
     }
     return render(request, "ecomm/products.html", context)
+
+
