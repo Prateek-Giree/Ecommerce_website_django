@@ -17,22 +17,25 @@
       </div>
 
       <div class="info">
-        <span class="discount">-18%</span>
+        {% if product.discount_percentage != 0 %}
+        <span class="discount">-{{ product.discount_percentage | floatformat:0 }}%</span>
+        {% endif %}
 
         <h3>{{ product.name }}</h3>
 
         <div class="prod-price">
           <span class="p">Rs {{ product.new_price|default:product.price }}</span>
           <div class="dis">
-            <span class="d">-18% off</span>
+            {% if product.discount_percentage != 0 %}
+            <span class="d">-{{ product.discount_percentage | floatformat:0 }}% off</span>
+            {% endif %}
             {% if product.new_price %}
             <span class="old-price">Rs {{ product.price }}</span>
             {% endif %}
           </div>
         </div>
 
-        <p class="prod-description">This is description</p>
-
+        
         <form action="" method="POST">
           <input type="number" name="qty" id="qty" class="qty" />
           <div class="order-buttons">
@@ -40,18 +43,68 @@
             <button>wishlist</button>
           </div>
         </form>
-
+        
         <div class="prod-information">
           <span
-            >Category: <span style="color: rgb(25, 103, 57)">{{ product.category.name }}</span></span
+          >Category: <span style="color: rgb(25, 103, 57)">{{ product.category.name }}</span></span
           >
           <span>Tags: <span style="color: rgb(25, 103, 57)"> {{ product.tag }} </span></span>
           <span
-            >Stock:
-            <span style="color: rgb(25, 103, 57)">10 items in stock</span></span
+          >Stock:
+          <span style="color: rgb(25, 103, 57)">10 items in stock</span></span
           >
         </div>
       </div>
+    </div>
+
+    <dl>
+      <dt>
+        <h3>
+          Description
+        </h3></dt>
+      <dd> {{ product.discription }} </dd>
+    </dl>
+   
+
+    <h3>Related products</h3>
+    <div class="related-prod">
+      {% for related_product in related_products  %}
+      <div class="cards">
+        <div class="product-grid">
+          <!-- Loop through the recent products -->
+          <div class="product-item">
+            <small class="off">
+              -{{ related_product.discount_percentage|floatformat:0 }}%
+            </small>
+
+            <a style="text-decoration: none" href="{% url "products" related_product.id %}">
+              <img src="{{ related_product.image.url }}" alt="{{ related_product.name }}" />
+              <small>{{ related_product.category.name }}</small>
+              <h3>{{ related_product.name }}</h3>
+            </a>
+            By
+            <a style="text-decoration: none" href="">
+              <span>{{ related_product.vendor.name }}</span>
+            </a>
+            <br />
+
+            <div class="price-btn">
+              <div class="price">
+                <span>Rs.{{ related_product.new_price|default:related_product.price }}</span>
+                <p><s>Rs.{{ related_product.price }} </s></p>
+              </div>
+
+              <div class="btns">
+                <a class="add" href=""
+                  ><i class="fa fa-cart-shopping"></i>Add</a
+                >
+                <a href=""><i class="fa-regular fa-heart"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
     </div>
   </section>
 
@@ -61,9 +114,59 @@
       <p><i class="fa-solid fa-location-dot"></i> Users Address</p>
       <hr />
       <h3>Return & warranty</h3>
-      <p><i class="fa-solid fa-truck"></i> Delivery in 2-3 days</p>
+      <p><i class="fa-solid fa-truck"></i> 
+        
+        {% if product.category.name|lower == "food" or product.category.name|lower == "snacks" %}
+        Instant Delivery </p>
+        {% else %}
+        Delivery in 2-3 days
+        {% endif %}
+
       <p> <i class="fa-solid fa-wallet"></i> Cash on delivery available</p>
     </div>
+
+    <div class="vendor-section">
+      <div class="vendor-header">
+          <h3>Vendor</h3>
+      </div>
+      
+      <div class="vendor-info">
+          <img src=" {{vendor.image.url}} " alt="Vendor Logo" class="vendor-logo">
+          <div class="vendor-details">
+            <h4>{{ vendor.name }}</h4>
+            <div class="vendor-rating">
+              <span class="stars">★★★★★</span>
+              <span class="reviews">(32 reviews)</span>
+            </div>
+          </div>
+        </div>
+        <hr>
+      
+        <div class="vendor-contact">
+          <p><strong>Address:</strong> {{ vendor.address }} </p>
+          <p><strong>Contact Seller:</strong> {{vendor.contact}} </p>
+      </div>
+        <hr/>
+      <div class="vendor-stats">
+          <div class="stat">
+              <p>Rating</p>
+              <p class="stat-value">92%</p>
+          </div>
+          <div class="stat">
+              <p>Ship on time</p>
+              <p class="stat-value">100%</p>
+          </div>
+          <div class="stat">
+              <p>Chat response</p>
+              <p class="stat-value">100%</p>
+          </div>
+      </div>
+     
+      <a href="#" class="vendor-link">Become a Vendor? Register now</a>
+  </div>
+
+  {% include "ecomm/category.html" %}
+
   </section>
 </main>
 {% endblock body %}

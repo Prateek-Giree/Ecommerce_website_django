@@ -35,6 +35,7 @@ html {
   border-radius: 10px;
   padding: 1rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
 }
 
 .category-card h1,
@@ -311,6 +312,7 @@ html {
   justify-content: center;
   padding: 1rem 5rem;
   gap: 2rem;
+  /* width: 75%; */
 }
 
 .product-details .prod{
@@ -424,8 +426,15 @@ html {
   }
 
 
+  .product-vendor{
+    display: flex;
+    flex-direction: column;
+    gap:1rem
+  }
+
 .details .product-vendor .delivery{
-  background-color:rgba(214, 214, 214, 0.467);
+  /* background-color:rgba(214, 214, 214, 0.467); */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -434,12 +443,137 @@ html {
   color: rgba(0, 0, 0, 0.685);
   font-weight: 550;
   font-size: 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
 }
 
+hr{
+  border: none;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.245);
+}
+.vendor-header h3,
 .delivery h3{
   font-size: 20px;
   font-weight: bold;
   color: black;
   font-family: 'Rajdhani', sans-serif;
+}
+
+/* Vendor Section Styles */
+.vendor-section {
+  background-color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 20px;
+
+}
+
+/* Vendor Info (Logo, Name, Rating) */
+.vendor-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.vendor-logo {
+  margin-top: 10px;
+  width: 100px;
+  height: 100px;
+  border-radius:10px;
+  margin-right: 15px;
+}
+
+.vendor-details h4 {
+  font-size: 1.1em;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.vendor-rating {
+  display: flex;
+  align-items: center;
+}
+
+.stars {
+  color: #f5c518;
+  font-size: 1em;
+}
+
+.reviews {
+  font-size: 0.9em;
+  color: #666;
+  margin-left: 5px;
+}
+
+/* Vendor Contact Info */
+.vendor-contact {
+  margin:20px 0 20px 0;
+}
+
+.vendor-contact p {
+  font-size: 0.9em;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.vendor-contact strong {
+  color: #333;
+}
+
+/* Vendor Stats (Rating, Ship on time, Chat response) */
+.vendor-stats {
+  display: flex;
+  justify-content: space-between;
+  margin:20px 0 20px 0;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat p {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.stat-value {
+  font-size: 1em;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Vendor Link */
+.vendor-link {
+  display: block;
+  text-align: center;
+  font-size: 0.9em;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.vendor-link:hover {
+  text-decoration: underline;
+}
+
+ .product-details dl{
+  margin: 2rem 0 2rem 0;
+  display: flex;
+  flex-direction: column;
+  text-align: justify;
+
+}
+
+.product-details dl dt h3{
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  margin-bottom: 1rem;
+}
+
+
+/* RELATED PRODUCT  */
+
+.related-prod{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
