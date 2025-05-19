@@ -1,0 +1,83 @@
+{% extends "base.html" %} {% block title %} FastCart | Cart {% endblock title %}
+ {% block body %} {% include "navbar.html" %} {% load static %}
+ <div class="container">
+    <div class="cart-main">
+        <h1>Your Cart</h1>
+        <div class="cart-info">
+            There are 1 products in your cart
+            <button class="clear-cart">🗑️ Clear Cart</button>
+        </div>
+        
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th class="cart-header">
+                        <input type="checkbox">
+                    </th>
+                    <th class="cart-header">Product</th>
+                    <th class="cart-header">Title</th>
+                    <th class="cart-header">Unit Price</th>
+                    <th class="cart-header">Quantity</th>
+                    <th class="cart-header">Subtotal</th>
+                    <th class="cart-header">Refresh</th>
+                    <th class="cart-header">Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="cart-row">
+                    <td>
+                        <input type="checkbox">
+                    </td>
+                    <td>
+                        <img src="/api/placeholder/150/150" alt="Chocolate Bread" class="product-img">
+                    </td>
+                    <td class="product-title">Chocolate Bread</td>
+                    <td class="product-price">$15.99</td>
+                    <td>
+                        <input type="number" value="1" min="1" class="quantity-input">
+                    </td>
+                    <td class="product-subtotal">$16</td>
+                    <td>
+                        <div class="refresh-circle"></div>
+                    </td>
+                    <td>
+                        <div class="highlight">
+                            <span class="cursor-pointer"></span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="button-container">
+            <button class="continue-btn">
+                ← Continue Shopping
+            </button>
+            <button class="update-btn">
+                ↻ Update Cart
+            </button>
+        </div>
+    </div>
+    
+    <div class="cart-sidebar">
+        <div class="cart-summary">
+            <div class="summary-row">
+                <span class="summary-label">Subtotal</span>
+                <span class="summary-value">$15.99</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Shipping</span>
+                <span class="free-shipping">Free</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Total</span>
+                <span class="summary-value">$15.99</span>
+            </div>
+            <button class="checkout-btn">
+                Proceed To Checkout →
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

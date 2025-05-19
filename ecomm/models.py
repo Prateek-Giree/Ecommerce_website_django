@@ -79,3 +79,28 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.product.name} ({self.rating}⭐)"
+
+
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user.username}'s Cart"
+
+    def total_price(self):
+        return sum(item.get_total_price() for item in self.items.all())
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        unique_together = ('cart', 'product')
+
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity}"
+
+    def get_total_price(self):
+        return self.product.new_price * self.quantity if self.product.new_price else self.product.price * self.quantity
