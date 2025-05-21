@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Category, Vendor, Product
-from .models import Wishlist, Review, UserProfile, Cart, CartItem
+from .models import Wishlist, Review, UserProfile, Cart, CartItem, DeliveryAddress
 
 
 # Register your models here.
@@ -13,3 +13,4 @@ admin.site.register(Review)
 admin.site.register(UserProfile)
 admin.site.register(Cart)
 admin.site.register(CartItem)
+admin.site.register(DeliveryAddress)

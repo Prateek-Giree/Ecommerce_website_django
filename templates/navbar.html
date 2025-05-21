@@ -13,17 +13,6 @@
     </div>
     <div class="top-right">
       <span>Need help? Call Us: 1800 900</span>
-      <div class="select-wrapper">
-        <select>
-          <option>English</option>
-          <option>Spanish</option>
-        </select>
-      </div>
-      <div class="select-wrapper">
-        <select>
-          <option>USD</option>
-          <option>EUR</option>
-        </select>
       </div>
     </div>
   </div>
@@ -56,7 +45,13 @@
         <div class="cart-icons">
           <a href="#"><i class="fa-regular fa-heart"></i> Wishlist</a>
           <a href="#"><i class="fa fa-cart-shopping"></i> Cart</a>
-          <a href="#"><i class="fa-solid fa-user"></i></i> Account</a>
+          <a href="#"><i class="fa-solid fa-user"></i>
+            {% if request.user.is_authenticated %}
+              {{ request.user.username }}
+            {% else %}
+              Account
+            {% endif %}
+          </a>
         </div>
       </div>
     </div>

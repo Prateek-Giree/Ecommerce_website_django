@@ -1,66 +1,79 @@
 {% extends "base.html" %} {% block title %} FastCart | Login 
-{% endblock title %} {% block body %} {% include "navbar.html" %} {% load static %}
+{% endblock title %} {% block body %} {% include "navbar.html" %} {% load static %} 
+
 
 {% if page == "login" %}
 <section class="breadcrumb">
-    <a href="{% url 'index' %}"><i class="fa fa-house"></i> Home</a>
+  <a href="{% url 'index' %}"><i class="fa fa-house"></i> Home</a>
   <span>&nbsp;&nbsp; > &nbsp;&nbsp;Login</span>
-  </section>
+</section>
 
 <div class="login-container">
   <div class="login-wrapper">
-    
     <div class="login-image">
-      <img src=" {% static 'assets/loginimg.webp' %} " alt="Login Image">
+      <img src=" {% static 'assets/loginimg.webp' %} " alt="Login Image" />
     </div>
 
-     <div class="form-box login-form">
+    <div class="form-box login-form">
       <h2>Login</h2>
       <p>Don't have an account? <a href="">Create here</a></p>
-      
+
       <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
-        <input type="email" placeholder="Email" name="email" onblur="" required />
-        <input type="password" placeholder="Password" name="password" onblur="" required />
+        <input
+          type="email"
+          placeholder="Email"
+          name="email"
+          onblur=""
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          name="pass"
+          onblur=""
+          required
+        />
         <div class="form-options">
           <a href="#">Forgot password?</a>
         </div>
         <button type="submit">Log in</button>
       </form>
-
     </div>
   </div>
 </div>
-{% endif %}
-
-{% if page == "register" %}
+{% endif %} {% if page == "register" %}
 
 <div class="form-container">
-  <div class="form-box register-form">    
+  <div class="form-box register-form">
     <h2>Register</h2>
     <p>Already have an account? <a href="#">Login here</a></p>
-    <form>
-      <input type="text" placeholder="Full Name" required>
-      <input type="email" placeholder="Email" required>
-      <input type="tel" placeholder="Contact Number" required>
-      <input type="text" placeholder="Address" required>
-      
-      <select required>
-        <option disabled selected >Select Delivery Address</option>
-        <option value="home">Bharatpur</option>
-        <option value="office">Parsa</option>
-          <option value="other">Khurkhure</option>
-          <option value="other">Bhandara</option>
-          <option value="other">Hetauda</option>
+
+    <form method="post" action="{% url 'register' %}">
+      {% csrf_token %}
+      <input type="text" placeholder="Full Name" name="fullname" required />
+      <input type="email" placeholder="Email" name="email" required />
+      <input type="tel" placeholder="Contact Number" name="phone" required />
+      <input type="text" placeholder="Address" name="address" required />
+
+      <select required name="delivery_addr">
+        <option disabled selected>Select Delivery Address</option>
+        {% for addr in delivery_addresses %}
+        <option value="{{ addr.id }}">{{ addr.location }}</option>
+        {% endfor %}
       </select>
 
-      <input type="password" placeholder="Password" required>
-      <input type="password" placeholder="Confirm Password" required>
-      
+      <input type="password" name="pass" placeholder="Password" required />
+      <input
+        type="password"
+        name="cpass"
+        placeholder="Confirm Password"
+        required
+      />
+
       <button type="submit">Register</button>
     </form>
   </div>
 </div>
 
-{% endif %}
-{% endblock %}
+{% endif %} {% endblock %}

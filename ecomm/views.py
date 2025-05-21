@@ -1,21 +1,92 @@
-from .models import Category, Product, Vendor,Cart, CartItem,Wishlist
+from .models import Category, Product,Cart, CartItem,Wishlist,DeliveryAddress,UserProfile
 from django.db.models import Count
+from django.contrib.auth.models import User
 from django.contrib import messages
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate, login as auth_login
+
 
 
 
 def register(request):
+   
+    delivery_addresses= DeliveryAddress.objects.all()
+    #get form data
+    if request.method == "POST":
+        fullname=request.POST.get("fullname")
+        email=request.POST.get("email")
+        phone=request.POST.get("phone")
+        address=request.POST.get("address")
+        delivery_addr_id=request.POST.get("delivery_addr")
+        password=request.POST.get("pass")
+        cpass=request.POST.get("cpass")
+        
+        print(fullname,email,phone,address,delivery_addr_id,password,cpass)
+        if password != cpass:
+            messages.error(request, "Password do not match")
+            return redirect('register')
+        
+        # Email already registered?
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email is already registered")
+            return redirect('register')
+
+        # Create User
+        username = email.split("@")[0]  # or use custom logic
+        user = User.objects.create(
+            username=username,
+            email=email,
+            first_name=fullname,
+            password=make_password(password)
+        )
+
+        # Create UserProfile
+        delivery_address = DeliveryAddress.objects.get(id=delivery_addr_id)
+        UserProfile.objects.create(
+            user=user,
+            phone=phone,
+            address=address,
+            delivery_address=delivery_address
+        )
+
+        messages.success(request, "Registration successful! Please log in.")
+        return redirect('login')
+        
+
     page="register"
     context={
         "page": page,
+        "delivery_addresses": delivery_addresses,
     }
     return render(request, "ecomm/login_register.html",context)
 
-def login(request):
+def login_view(request):
+    
+    # Check if the user is already logged in
+    if request.user.is_authenticated:
+        return redirect('index')
+    
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("pass")  # 'password', not 'pass'
+
+        try:
+            user = User.objects.get(email=email)
+            user = authenticate(request, username=email, password=password)
+            if user is not None:
+                auth_login(request, user)
+                messages.success(request, "Login successful!")
+                return redirect('index')
+            else:
+                messages.error(request, "Invalid password")
+        except User.DoesNotExist:
+            messages.error(request, "User does not exist")   
+             
     page="login"
+
     context={
         "page": page,
     }
