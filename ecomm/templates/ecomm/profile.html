@@ -1,5 +1,210 @@
-{% extends "base.html" %} {% block title %} FastCart {% endblock title %}
- {% block body %} {% include "navbar.html" %} {% load static %}
+{% extends "base.html" %} {% block title %} FastCart {% endblock title %} 
+{% block body %} {% include "navbar.html" %} {% load static %}
 
+
+<section class="breadcrumb">
+    <a href="{% url 'index' %}"><i class="fa fa-house"></i> Home</a>
+    &nbsp;&nbsp;>&nbsp;&nbsp;
+    <a href="{% url 'profile' request.user.id %}"
+      ><i class="fa-solid fa-user"></i> My Account</a
+    >
+  </section>
+  
+  
+<div class="mobile-header">
+  <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+</div>
+
+<!-- Overlay for mobile -->
+<div class="overlay" onclick="closeSidebar()"></div>
+
+<div class="profile-container">
+    {% include "profile_sidebar.html" %}
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- My Details Content (Default) -->
+    <div id="my-details" class="content-section active">
+      <div class="content-header">
+        <h1 class="content-title">My Details</h1>
+        <p class="content-subtitle">
+          Overview of your account information and activity
+        </p>
+      </div>
+
+      <div class="content-card">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">Full Name</div>
+            <div class="detail-value">{{ user.first_name }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Email Address</div>
+            <div class="detail-value">{{ user.email }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Phone Number</div>
+            <div class="detail-value">{{ user_profile.phone }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Member Since</div>
+            <div class="detail-value">{{ user.date_joined|date:"F Y" }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Primary Address</div>
+            <div class="detail-value">
+                {{ user_profile.address }}
+            </div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Delivery Address</div>
+            <div class="detail-value">
+                {{ delivery_address.location }}
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number"> {{cart_items.count}} </div>
+            <div class="stat-label">Cart Items</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-number">{{wishlist.count}}</div>
+            <div class="stat-label">Wishlist Items</div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <a
+            href="{% url "edit_profile" %}"
+            class="btn btn-primary"
+          >
+          <i class="fa-solid fa-pen"></i> Edit Profile
+          </a>
+          <a
+            href=""
+            class="btn btn-outline"
+          >
+          <i class="fa-solid fa-cart-shopping"></i> View cart
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Profile Content -->
+    <div id="edit-profile" class="content-section">
+      <div class="content-header">
+        <h1 class="content-title">Edit Profile</h1>
+        <p class="content-subtitle">
+          Update your personal information and preferences
+        </p>
+      </div>
+      <div class="content-card">
+        <p
+          style="
+            font-size: 16px;
+            color: #7f8c8d;
+            text-align: center;
+            padding: 40px;
+          "
+        >
+          🔧 Edit profile form would be integrated here<br />
+          <a href="#" style="color: #3498db; text-decoration: none"
+            >Click here to access the edit form</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <!-- My Cart Content -->
+    <div id="my-cart" class="content-section">
+      <div class="content-header">
+        <h1 class="content-title">My Cart</h1>
+        <p class="content-subtitle">Review items in your shopping cart</p>
+      </div>
+      <div class="content-card">
+        <p
+          style="
+            font-size: 16px;
+            color: #7f8c8d;
+            text-align: center;
+            padding: 40px;
+          "
+        >
+          🛒 You have 3 items in your cart<br />
+          <strong style="color: #2c3e50">Total: $156.99</strong>
+        </p>
+      </div>
+    </div>
+
+    <!-- My Wishlist Content -->
+    <div id="my-wishlist" class="content-section">
+      <div class="content-header">
+        <h1 class="content-title">My Wishlist</h1>
+        <p class="content-subtitle">Items you've saved for later</p>
+      </div>
+      <div class="content-card">
+        <p
+          style="
+            font-size: 16px;
+            color: #7f8c8d;
+            text-align: center;
+            padding: 40px;
+          "
+        >
+          ❤️ You have 7 items in your wishlist<br />
+          <a href="#" style="color: #3498db; text-decoration: none"
+            >View all wishlist items</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <!-- Order History Content -->
+    <div id="order-history" class="content-section">
+      <div class="content-header">
+        <h1 class="content-title">Order History</h1>
+        <p class="content-subtitle">Track your previous purchases</p>
+      </div>
+      <div class="content-card">
+        <p
+          style="
+            font-size: 16px;
+            color: #7f8c8d;
+            text-align: center;
+            padding: 40px;
+          "
+        >
+          📦 You have completed 24 orders<br />
+          <strong style="color: #2c3e50">Total spent: $2,847.50</strong>
+        </p>
+      </div>
+    </div>
+
+    <!-- Addresses Content -->
+    <div id="addresses" class="content-section">
+      <div class="content-header">
+        <h1 class="content-title">My Addresses</h1>
+        <p class="content-subtitle">Manage your delivery addresses</p>
+      </div>
+      <div class="content-card">
+        <p
+          style="
+            font-size: 16px;
+            color: #7f8c8d;
+            text-align: center;
+            padding: 40px;
+          "
+        >
+          📍 Manage your saved addresses<br />
+          <a href="#" style="color: #3498db; text-decoration: none"
+            >Add new address</a
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock body %}

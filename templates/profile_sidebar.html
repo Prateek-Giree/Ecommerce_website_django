@@ -1,0 +1,72 @@
+{% load static %}
+
+<div class="sidebar" id="sidebar">
+    <!-- Profile Section -->
+    <div class="profile-section">
+        <div class="profile-image">
+            {% if user_profile.profile_image %}
+                <img src="{{ user_profile.profile_image.url }}" alt="Profile Image" class="profile-img" />
+            {% else %}
+                <img src="{% static 'assets/logo.png' %}" alt="Profile Image" class="profile-img" />
+            {% endif %}
+        </div>
+        <div class="greeting">Hello, {{ user.first_name|default:"User" }} </div>
+        <div class="user-email">{{ user.email }}</div>
+    </div>
+
+    <!-- Navigation Section -->
+    <div class="nav-section">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="{% url "profile" request.user.id %}" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user"></i></span>
+                    My Details
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url "edit_profile" %}" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-pen"></i></span>
+                    Edit Profile
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showContent('my-cart')">
+                    <span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span>
+                    My Cart
+                    <span
+                        style="
+                            margin-left: auto;
+                            background: rgba(255, 255, 255, 0.3);
+                            padding: 2px 8px;
+                            border-radius: 12px;
+                            font-size: 12px;
+                        "
+                    >{{ cart_items|length }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showContent('my-wishlist')">
+                    <span class="nav-icon"><i class="fa-solid fa-heart"></i></span>
+                    My Wishlist
+                    <span
+                        style="
+                            margin-left: auto;
+                            background: rgba(255, 255, 255, 0.3);
+                            padding: 2px 8px;
+                            border-radius: 12px;
+                            font-size: 12px;
+                        "
+                    >{{ wishlist|length }}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Logout Section -->
+    <div class="logout-section">
+        <a href="{% url 'logout' %}" class="logout-btn">
+            <span class="nav-icon">🚪</span>
+            Logout
+        </a>
+    </div>
+</div>

@@ -10,6 +10,6 @@ urlpatterns = [
     path('login/',login_view, name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path("cart/", cart, name="cart"),
-    path("profile" , profile, name="profile"),
+    path("profile/<int:pk>" , profile, name="profile"),
     path("edit_profile" , edit_profile, name="edit_profile"),
 ]
