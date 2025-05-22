@@ -2,7 +2,7 @@ from .models import Category, Product,Cart, CartItem,Wishlist,DeliveryAddress,Us
 from django.db.models import Count
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.shortcuts import get_object_or_404, render,redirect
+from django.shortcuts import get_object_or_404, render,redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
@@ -10,8 +10,12 @@ from django.contrib.auth import authenticate, login as auth_login
 
 
 
+# =============================================================
 
 def register(request):
+
+    if request.user.is_authenticated:
+        return redirect('index')
    
     delivery_addresses= DeliveryAddress.objects.all()
     #get form data
@@ -63,6 +67,9 @@ def register(request):
     }
     return render(request, "ecomm/login_register.html",context)
 
+
+# =============================================================
+
 def login_view(request):
     
     # Check if the user is already logged in
@@ -71,7 +78,7 @@ def login_view(request):
     
     if request.method == "POST":
         email = request.POST.get("email")
-        password = request.POST.get("pass")  # 'password', not 'pass'
+        password = request.POST.get("pass")
 
         try:
             user = User.objects.get(email=email)
@@ -92,6 +99,9 @@ def login_view(request):
     }
     return render(request, "ecomm/login_register.html", context)
 
+
+# =============================================================
+
 def index(request):
     categories = Category.objects.annotate(product_count=Count("product"))
     recent_products = Product.objects.order_by("-id")[:7]
@@ -104,6 +114,8 @@ def index(request):
     }
     return render(request, "ecomm/index.html", context)
 
+
+# =============================================================
 
 def products(request, pk):
     product_qs = Product.objects.filter(id=pk)
@@ -121,12 +133,34 @@ def products(request, pk):
         "vendor": vendor,
         "categories": categories,
         "related_products": related_products,
-        "messages": "Product added to cart successfully!",
     }
     return render(request, "ecomm/products.html", context)
 
 
+# =============================================================
+
+@login_required(login_url='login')
+def profile(request):
+    return render(request, "ecomm/profile.html")
+
+
+# =============================================================
+
+@login_required(login_url='login')
+def edit_profile(request):
+    return render(request, "ecomm/edit_profile.html")
+
+
+# =============================================================
+
+@login_required(login_url='login')
 def cart(request):
+    if not request.user.is_authenticated:
+        pass
+    else:
+        messages.error(request, "You need to be logged in to view your cart.")
+
+
     # if request.user.is_authenticated:
     #     cart, created = Cart.objects.get_or_create(user=request.user)
     #     cart_items = CartItem.objects.filter(cart=cart)
@@ -136,7 +170,11 @@ def cart(request):
     # context = {
     #     "cart_items": cart_items,
     # }
-    return render(request, "ecomm/cart.html")
+    return HttpResponse("Cart page is under construction.")
+    # return render(request, "ecomm/cart.html")
+
+
+# =============================================================
 
 @login_required
 def add_to_wishlist(request, product_id):
@@ -150,6 +188,9 @@ def add_to_wishlist(request, product_id):
         messages.success(request, "Product added to your wishlist.")
 
     return render(request, 'ecomm/products.html', {'product': product})
+
+
+# =============================================================
 
 @login_required
 def add_to_cart(request, product_id):

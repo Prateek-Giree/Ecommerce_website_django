@@ -1,0 +1,129 @@
+{% extends "base.html" %} {% block title %} FastCart {% endblock title %}
+ {% block body %} {% include "navbar.html" %} {% load static %}
+
+ <section class="breadcrumb">
+    <a href="{% url 'index' %}"><i class="fa fa-house"></i> Home</a>
+    &nbsp;&nbsp;>&nbsp;&nbsp;
+    <a href="{% url 'index' %}"><i class="fa-solid fa-user"></i> My Account</a>
+    &nbsp;&nbsp;>&nbsp;&nbsp;
+    <a href=""><i class="fa-solid fa-pen"></i> Edit Profile</a>
+  </section>
+
+ <div class="edit-container">
+
+    <div class="page-header">
+        <h1>Edit Profile</h1>
+        <p>Update your personal information and account settings</p>
+    </div>
+
+    <form id="personalDetailsForm" method="POST" action="">
+        <div class="form-section">
+            <h2 class="section-title">Edit Personal Details</h2>
+            
+            <div class="form-info">
+                <strong>💡 Tip:</strong> Keep your information up to date to ensure smooth delivery and communication.
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="fullName">Full Name <span class="required">*</span></label>
+                    <input type="text" id="fullName" name="fullName" value="John Anderson" required>
+                    <span class="error">Error message here</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" value="john.anderson@email.com" required>
+                    <span class="error">Error message here</span>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number <span class="required">*</span></label>
+                    <input type="tel" id="phone" name="phone" value="+1 (555) 123-4567" required>
+                    <span class="error">Error message here</span>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="deliveryAddress">Default Delivery Address</label>
+                    <select id="deliveryAddress" name="deliveryAddress">
+                        <option value="">Parsa</option>
+                        <option value="">Parsa</option>
+                        <option value="">Parsa</option>
+                        <option value="">Parsa</option>
+                    </select>
+                    <span class="error">Error message here</span>
+
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="address">Primary Address <span class="required">*</span></label>
+                    <textarea id="address" name="address" placeholder="Enter your complete address including street, city, state, and ZIP code" required>Rapti-09 Rasauli</textarea>
+                    <span class="error">Error message here</span>
+                </div>
+            </div>
+
+            <!-- Personal Details Action Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" onclick="resetPersonalForm()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Personal Details</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Change Password Form -->
+    <form id="passwordForm" method="POST" action="index.html">
+        <div class="form-section">
+            <h2 class="section-title">Change Password</h2>
+            
+            <div class="form-info">
+                <strong>🔒 Security:</strong> Choose a strong password with at least 8 characters, including uppercase, lowercase, numbers, and special characters.
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="currentPassword">Current Password <span class="required">*</span></label>
+                    <div class="input-group">
+                        <input type="password" id="currentPassword" name="currentPassword" required>
+                        <span class="input-icon" onclick="togglePassword('currentPassword')">👁️</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="newPassword">New Password <span class="required">*</span></label>
+                    <div class="input-group">
+                        <input type="password" id="newPassword" name="newPassword" required>
+                        <span class="input-icon" onclick="togglePassword('newPassword')">👁️</span>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar">
+                            <div class="strength-fill"></div>
+                        </div>
+                        <span class="strength-text">Password strength: Not entered</span>
+                    </div>
+                    <div class="password-help">
+                        Password must be at least 8 characters long and contain uppercase, lowercase, numbers, and special characters.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm New Password <span class="required">*</span></label>
+                    <div class="input-group">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <span class="input-icon" onclick="togglePassword('confirmPassword')">👁️</span>
+                    </div>
+                    <div id="passwordMatch" class="password-help"></div>
+                </div>
+            </div>
+
+            <!-- Password Change Action Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" onclick="resetPasswordForm()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Change Password</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock body %}
