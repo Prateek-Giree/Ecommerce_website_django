@@ -244,22 +244,37 @@ def edit_profile(request):
 @login_required(login_url='login')
 def cart(request):
     if not request.user.is_authenticated:
-        pass
-    else:
         messages.error(request, "You need to be logged in to view your cart.")
+        return render(request, "ecomm/cart.html")  # or redirect to login
+
+    cart = get_object_or_404(Cart, user=request.user)
+    items = cart.items.select_related('product')  # efficient query
+
+    context = {
+        'cart': cart,
+        'items': items,
+        'total': cart.total_price(),
+    }
+    return render(request, "ecomm/cart.html", context)
 
 
-    # if request.user.is_authenticated:
-    #     cart, created = Cart.objects.get_or_create(user=request.user)
-    #     cart_items = CartItem.objects.filter(cart=cart)
-    # else:
-    #     cart_items = []
+# =============================================================
 
-    # context = {
-    #     "cart_items": cart_items,
-    # }
-    return HttpResponse("Cart page is under construction.")
-    # return render(request, "ecomm/cart.html")
+@login_required
+def remove_from_cart(request, pk):
+    if not request.user.is_authenticated:
+        messages.error(request, "You need to be logged in to remove items from your cart.")
+        return redirect('cart')
+
+    cart = get_object_or_404(Cart, user=request.user)
+    try:
+        item = CartItem.objects.get(id=pk, cart=cart)
+        item.delete()
+        messages.success(request, "Item removed from cart successfully.")
+    except CartItem.DoesNotExist:
+        messages.error(request, "Item not found in your cart.")
+
+    return redirect('cart')
 
 
 # =============================================================
@@ -293,5 +308,5 @@ def add_to_cart(request, product_id):
 
     messages.success(request, f"{product.name} added to cart successfully!")
 
-    # Instead of redirecting, re-render the product page or any page you choose
+    # re-rendering the product page 
     return render(request, 'ecomm/product.html', {'product': product})

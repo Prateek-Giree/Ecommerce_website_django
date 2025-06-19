@@ -10,26 +10,26 @@
     <link rel="icon" href="{% static 'assets/logo.png' %}" sizes="128x128" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}" />
     <script src=" {% static "js/script.js" %} " ></script>
     <title>{% block title %}{% endblock title %}</title>
   </head>
-  <body>
+<body>
+  <div class="page-wrapper">
     {% block body %} {% endblock body %}
+  </div>
 
-
-    <!-- Sweet alert  -->
-    {% if messages %}
-    <script>
-        {% for message in messages %}
-          Swal.fire({
-            icon: "{{ message.tags }}",
-            title: "{{ message }}",
-            showConfirmButton: true,
-            timer: 3000,
-          });
-        {% endfor %}
-    </script>
+  {% if messages %}
+  <script>
+      {% for message in messages %}
+        Swal.fire({
+          icon: "{{ message.tags }}",
+          title: "{{ message }}",
+          showConfirmButton: true,
+          timer: 3000,
+        });
+      {% endfor %}
+  </script>
   {% endif %}
-    
-  </body>
+</body>
 </html>

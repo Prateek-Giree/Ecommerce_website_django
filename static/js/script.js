@@ -79,3 +79,51 @@ document.addEventListener("DOMContentLoaded", function () {
     checkPasswordStrength(this.value);
   });
 });
+
+
+
+// CART 
+document.addEventListener("DOMContentLoaded", function () {
+  // Add listeners to all +/- buttons
+  document.querySelectorAll(".quantity-btn").forEach(button => {
+    button.addEventListener("click", function () {
+      const row = button.closest("tr");
+      const qtyInput = row.querySelector(".quantity-input");
+      let quantity = parseInt(qtyInput.value);
+
+      // Determine whether "+" or "-"
+      if (button.textContent.trim() === "+") {
+        quantity++;
+      } else if (quantity > 1) {
+        quantity--;
+      }
+
+      qtyInput.value = quantity;
+      updateRowSubtotal(row);
+      updateCartTotal();
+    });
+  });
+
+  // Initial calculation on page load
+  document.querySelectorAll("tbody tr").forEach(row => {
+    updateRowSubtotal(row);
+  });
+  updateCartTotal();
+});
+
+function updateRowSubtotal(row) {
+  const price = parseFloat(row.querySelector(".unit-price").textContent.replace("$", "").trim());
+  const qty = parseInt(row.querySelector(".quantity-input").value);
+  const subtotal = (price * qty).toFixed(2);
+  row.querySelector(".subtotal").textContent = `$${subtotal}`;
+}
+
+function updateCartTotal() {
+  let total = 0;
+  document.querySelectorAll(".subtotal").forEach(cell => {
+    total += parseFloat(cell.textContent.replace("$", ""));
+  });
+  total = total.toFixed(2);
+  document.getElementById("cart-subtotal").textContent = `$${total}`;
+  document.getElementById("cart-total").textContent = `$${total}`;
+}

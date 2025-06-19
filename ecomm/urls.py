@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from .views import index,products,cart, login_view,register,profile,edit_profile
+from .views import index,products,cart, login_view,register,profile,edit_profile,remove_from_cart
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -10,6 +10,7 @@ urlpatterns = [
     path('login/',login_view, name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path("cart/", cart, name="cart"),
+    path("remove_from_cart/<int:pk>", remove_from_cart, name="remove_from_cart"),
     path("profile/<int:pk>" , profile, name="profile"),
     path("edit_profile" , edit_profile, name="edit_profile"),
 ]

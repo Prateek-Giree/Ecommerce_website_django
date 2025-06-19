@@ -14,7 +14,7 @@
 
     <div class="form-box login-form">
       <h2>Login</h2>
-      <p>Don't have an account? <a href="">Create here</a></p>
+      <p>Don't have an account? <a href="{% url "register" %}">Create here</a></p>
 
       <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
