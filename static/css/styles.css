@@ -1310,7 +1310,7 @@ hr {
   gap: 5px;
 }
 
-.main-content {
+.Main-content {
   display: grid;
   grid-template-columns: 1fr 300px;
   gap: 30px;
@@ -1616,7 +1616,7 @@ color: rgb(185, 30, 30);
 }
 
 @media (max-width: 768px) {
-  .main-content {
+  .Main-content {
     grid-template-columns: 1fr;
   }
 

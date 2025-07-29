@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -143,3 +144,83 @@ AUTHENTICATION_BACKENDS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
+
+JAZZMIN_SETTINGS = {
+    "site_title": "FastCart Admin",
+    "site_header": "FastCart Admin Panel",
+    "site_brand": "FastCart",
+    "welcome_sign": "Welcome to FastCart Admin",
+    "copyright": "© 2025",
+    "search_model": ["ecomm.Product"],
+
+    "show_sidebar": True,
+    "navigation_expanded": True,
+
+    "icons": {
+        "auth.User": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "products.Product": "fas fa-box-open",
+        "vendors.Vendor": "fas fa-store",
+        "cartorder.CartOrder": "fas fa-shopping-cart",
+        "category.Category": "fas fa-tags",
+    },
+
+    "custom_links": {
+        "products.Product": [
+            {
+                "name": "View Storefront",
+                "url": "/",
+                "icon": "fas fa-home",
+                "permissions": ["products.view_product"]
+            }
+        ]
+    },
+
+    "order_with_respect_to": ["products", "vendors", "cartorder", "category"],
+
+    "hide_apps": [],
+    "hide_models": [],
+
+    "topmenu_links": [
+        {"name": "Dashboard", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Site", "url": "/", "new_window": True},
+    ],
+
+    "usermenu_links": [
+        {"name": "Support", "url": "https://fastcart.support", "new_window": True}
+    ],
+
+    "show_ui_builder": True,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": True,
+    "brand_small_text": False,
+    "brand_colour": "navbar-navy",
+    "accent": "accent-navy",
+    "navbar": "navbar-navy navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-info",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "default",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}
