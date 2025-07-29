@@ -173,6 +173,15 @@ JAZZMIN_SETTINGS = {
                 "icon": "fas fa-home",
                 "permissions": ["products.view_product"]
             }
+        ],
+
+        "auth": [ 
+            {
+                "name": "Analytics",
+                "url": "admin-analytics",
+                "icon": "fas fa-chart-line",
+                "permissions": ["auth.view_user"],
+            }
         ]
     },
 

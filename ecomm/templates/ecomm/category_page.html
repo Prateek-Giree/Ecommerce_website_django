@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %} FastCart | Category {% endblock title %}
+{% block body %}
+{% include "navbar.html" %}
+{% load static %}
+
+<div class="category-container">
+  <h1>Product Catalog</h1>
+
+  {% for category, products in category_products.items %}
+  <div class="category">
+    <h2 class="category-title">{{ category.name }}</h2>
+
+    <div class="cproduct-grid">
+      {% for product in products %}
+      <a href=" {% url "products" product.id %} " class="cproduct-card">
+          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        <div class="cproduct-info">
+          <div class="cproduct-name">{{ product.name }}</div>
+          <div class="cproduct-price">
+            Rs. {{ product.new_price|default:product.price }}
+          </div>
+        </div>
+      </a>
+      {% empty %}
+      <p>No products found in this category.</p>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock body %}

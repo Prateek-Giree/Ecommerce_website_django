@@ -39,8 +39,9 @@
         <form action="" method="POST">
           <input type="number" name="qty" id="qty" class="qty" />
           <div class="order-buttons">
-            <button>Add to cart</button>
-            <button>wishlist</button>
+            <button type="submit" name="action" value="add_to_cart"><i class="fa fa-cart-shopping"></i>Add</button>
+            <button type="submit" name="action" value="wishlist">Wishlist</button>
+
           </div>
         </form>
         
@@ -49,10 +50,16 @@
           >Category: <span style="color: rgb(25, 103, 57)">{{ product.category.name }}</span></span
           >
           <span>Tags: <span style="color: rgb(25, 103, 57)"> {{ product.tag }} </span></span>
-          <span
-          >Stock:
-          <span style="color: rgb(25, 103, 57)">10 items in stock</span></span
-          >
+          <span>Stock: 
+            <span style="color: rgb(25, 103, 57)"> 
+            {% if product.stock is not 0 %}
+            {{product.stock}} items in stock
+          </span>
+          {% else %}
+          <span style="color: rgb(209, 27, 3)">Out of stock</span>
+          {% endif %}
+          
+        </span>
         </div>
       </div>
     </div>
@@ -131,7 +138,7 @@
       </div>
       
       <div class="vendor-info">
-          <img src=" {{vendor.image.url}} " alt="Vendor Logo" class="vendor-logo">
+          <img src="{{vendor.image.url}}" alt="Vendor Logo" class="vendor-logo">
           <div class="vendor-details">
             <h4>{{ vendor.name }}</h4>
             <div class="vendor-rating">

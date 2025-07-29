@@ -34,6 +34,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     discription = models.TextField(blank=True)
     tag= models.CharField( blank=True, max_length=100)
+    stock = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name

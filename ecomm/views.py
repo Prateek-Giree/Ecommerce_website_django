@@ -8,7 +8,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password,check_password
 from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render
 
+@staff_member_required
+def analytics_view(request):
+    # Prepare data for charts (e.g., order stats, product sales, etc.)
+    return render(request, "ecomm/analytics.html")
 
 
 # =============================================================
@@ -310,3 +316,19 @@ def add_to_cart(request, product_id):
 
     # re-rendering the product page 
     return render(request, 'ecomm/product.html', {'product': product})
+
+
+def category_page(request,pk):
+     # Fetch all categories
+    categories = Category.objects.filter(id=pk)
+
+    # Create a dictionary with category and its products
+    category_products = {
+        category: Product.objects.filter(category=category)
+        for category in categories
+    }
+
+    context={
+        "category_products": category_products
+    }
+    return render(request, "ecomm/category_page.html", context)

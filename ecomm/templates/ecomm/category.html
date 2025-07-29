@@ -5,7 +5,7 @@
     {% for category in categories %}
     <div class="category-details">
       <img src=" {{category.image.url}} " alt="" />
-      <a href="#"> {{ category.name }} </a>
+      <a href=" {% url "category" category.id %} "> {{ category.name }} </a>
       <small> {{ category.product_set.count }} </small>
     </div>
     {% endfor %}
