@@ -3,9 +3,12 @@
 <div class="top-bar">
   <div class="container">
     <div class="top-links">
-      <a href="#">About Us</a>
-      <a href="#">My Account</a>
-      <a href="#">Wishlist</a>
+      <a href=" {% url "about" %} ">About Us</a>
+     {% if request.user.is_authenticated %}
+      <a href="{% url 'profile' request.user.id %}">My Account</a>
+    {% endif %}
+
+      <a href="{% url "wishlist" %}">Wishlist</a>
       <a href="#">Order Tracking</a>
     </div>
     <div class="middle">
@@ -34,16 +37,8 @@
       </div>
 
       <div class="location-cart">
-        <select class="location-btn">
-          <option disabled selected>
-            <i class="fa fa-location-dot"></i> Your Location 
-          </option>
-          <option>Location 1</option>
-          <option>Location 2</option>
-
-        </select>
         <div class="cart-icons">
-          <a href="#"><i class="fa-regular fa-heart"></i> Wishlist</a>
+          <a href="{% url "wishlist" %}"><i class="fa-regular fa-heart"></i> Wishlist</a>
           <a href=" {% url "cart" %} "><i class="fa fa-cart-shopping"></i> Cart</a>
           {% if request.user.is_authenticated %}
           <a href=" {% url "profile" request.user.id %} "><i class="fa-solid fa-user"></i>
@@ -68,14 +63,14 @@
       </div>
       <div class="nav-links">
         <a href="#">Deals</a>
-        <a href="#">Home</a>
+        <a href="{% url "index" %}">Home</a>
         <a href="#">Category</a>
         <a href="#">Shop</a>
         <a href="#">Vendors</a>
         <a href="#">Mega menu</a>
         <a href="#">Blog</a>
         <a href="#">Pages</a>
-        <a href="#">Contact</a>
+        <a href="{% url "about" %}#contact">Contact</a>
       </div>
      
       <div class="support">

@@ -45,7 +45,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{% url "wishlist" %}" class="nav-link">
                     <span class="nav-icon"><i class="fa-solid fa-heart"></i></span>
                     My Wishlist
                     <span
@@ -63,10 +63,12 @@
     </div>
 
     <!-- Logout Section -->
-    <div class="logout-section">
-        <a href="{% url 'logout' %}" class="logout-btn">
-            <span class="nav-icon">🚪</span>
-            Logout
-        </a>
-    </div>
+<form method="POST" action="{% url 'logout' %}" class="logout-section" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="logout-btn">
+        <span class="nav-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+        Logout
+    </button>
+</form>
+
 </div>

@@ -127,3 +127,37 @@ function updateCartTotal() {
   document.getElementById("cart-subtotal").textContent = `$${total}`;
   document.getElementById("cart-total").textContent = `$${total}`;
 }
+
+
+
+
+//Wishlist AJAX
+document.addEventListener("DOMContentLoaded", function () {
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+  document.querySelectorAll(".wishlist-btn").forEach(button => {
+    button.addEventListener("click", function () {
+      const productId = this.dataset.productId;
+      const action = this.dataset.action;
+
+      fetch("{% url 'toggle_wishlist_ajax' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrftoken,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `product_id=${productId}&action=${action}`,
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "added") {
+            this.innerHTML = '<i class="fa fa-heart-broken"></i> Remove from Wishlist';
+            this.dataset.action = "remove";
+          } else if (data.status === "removed") {
+            this.innerHTML = '<i class="fa fa-heart"></i> Add to Wishlist';
+            this.dataset.action = "add";
+          }
+        });
+    });
+  });
+});

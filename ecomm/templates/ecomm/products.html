@@ -1,5 +1,5 @@
-{% extends "base.html" %} {% block title %} FastCart | Products 
-{% endblock title %} {% block body %} {% include "navbar.html" %} {% load static %}
+{% extends "base.html" %} {% block title %} FastCart | Products
+ {% endblock title %} {% block body %} {% include "navbar.html" %} {% load static %}
 
 <section class="breadcrumb">
   <a href="{% url 'index' %}"><i class="fa fa-house"></i> Home</a>
@@ -10,10 +10,7 @@
   <section class="product-details">
     <div class="prod">
       <div class="image">
-        <img
-          src="{{ product.image.url }}"
-          alt="Product image"
-        />
+        <img src="{{ product.image.url }}" alt="Product image" />
       </div>
 
       <div class="info">
@@ -28,54 +25,62 @@
           <div class="dis">
             {% if product.discount_percentage != 0 %}
             <span class="d">-{{ product.discount_percentage | floatformat:0 }}% off</span>
-            {% endif %}
-            {% if product.new_price %}
+            {% endif %} {% if product.new_price %}
             <span class="old-price">Rs {{ product.price }}</span>
             {% endif %}
           </div>
         </div>
 
-        
         <form action="" method="POST">
-          <input type="number" name="qty" id="qty" class="qty" />
+          <input type="number" name="qty" id="qty" class="qty" min="1" max="15" />
           <div class="order-buttons">
-            <button type="submit" name="action" value="add_to_cart"><i class="fa fa-cart-shopping"></i>Add</button>
-            <button type="submit" name="action" value="wishlist">Wishlist</button>
-
+            <button type="submit" name="action" value="add_to_cart">
+              <i class="fa fa-cart-shopping"></i>Add
+            </button>
           </div>
         </form>
-        
+
+        <form action="{% url 'add_to_wishlist' product.id %}" method="POST">
+          {% csrf_token %}
+          <div class="order-buttons">
+            <button class="wishlist-btn" data-product-id="{{ product.id }}"
+              data-action="{% if in_wishlist %}remove{% else %}add{% endif %}">
+              {% if in_wishlist %}
+              <i class="fa fa-heart-broken"></i> Remove from Wishlist {% else %}
+              <i class="fa fa-heart"></i> Add to Wishlist {% endif %}
+            </button>
+          </div>
+        </form>
+
         <div class="prod-information">
-          <span
-          >Category: <span style="color: rgb(25, 103, 57)">{{ product.category.name }}</span></span
-          >
-          <span>Tags: <span style="color: rgb(25, 103, 57)"> {{ product.tag }} </span></span>
-          <span>Stock: 
-            <span style="color: rgb(25, 103, 57)"> 
-            {% if product.stock is not 0 %}
-            {{product.stock}} items in stock
+          <span>Category:
+            <span style="color: rgb(25, 103, 57)">{{ product.category.name }}</span></span>
+          <span>Tags:
+            <span style="color: rgb(25, 103, 57)">
+              {{ product.tag }}
+            </span></span>
+          <span>Stock:
+            <span style="color: rgb(25, 103, 57)">
+              {% if product.stock is not 0 %} {{product.stock}} items in stock
+            </span>
+            {% else %}
+            <span style="color: rgb(209, 27, 3)">Out of stock</span>
+            {% endif %}
           </span>
-          {% else %}
-          <span style="color: rgb(209, 27, 3)">Out of stock</span>
-          {% endif %}
-          
-        </span>
         </div>
       </div>
     </div>
 
     <dl>
       <dt>
-        <h3 class="head3">
-          Description
-        </h3></dt>
-      <dd> {{ product.discription }} </dd>
+        <h3 class="head3">Description</h3>
+      </dt>
+      <dd>{{ product.discription }}</dd>
     </dl>
-   
 
     <h3 class="head3">Related products</h3>
     <div class="related-prod">
-      {% for related_product in related_products  %}
+      {% for related_product in related_products %}
       <div class="cards">
         <div class="product-grid">
           <!-- Loop through the recent products -->
@@ -84,12 +89,11 @@
               -{{ related_product.discount_percentage|floatformat:0 }}%
             </small>
 
-            <a style="text-decoration: none" href="{% url "products" related_product.id %}">
+            <a style="text-decoration: none" href="{% url 'products' related_product.id %}">
               <img src="{{ related_product.image.url }}" alt="{{ related_product.name }}" />
               <small>{{ related_product.category.name }}</small>
               <h3>{{ related_product.name }}</h3>
             </a>
-            By
             <a style="text-decoration: none" href="">
               <span>{{ related_product.vendor.name }}</span>
             </a>
@@ -102,9 +106,7 @@
               </div>
 
               <div class="btns">
-                <a class="add" href=""
-                  ><i class="fa fa-cart-shopping"></i>Add</a
-                >
+                <a class="add" href=""><i class="fa fa-cart-shopping"></i>Add</a>
                 <a href=""><i class="fa-regular fa-heart"></i></a>
               </div>
             </div>
@@ -121,59 +123,57 @@
       <p><i class="fa-solid fa-location-dot"></i> Users Address</p>
       <hr />
       <h3>Return & warranty</h3>
-      <p><i class="fa-solid fa-truck"></i> 
-        
-        {% if product.category.name|lower == "food" or product.category.name|lower == "snacks" %}
-        Instant Delivery </p>
-        {% else %}
-        Delivery in 2-3 days
-        {% endif %}
+      <p>
+        <i class="fa-solid fa-truck"></i>
 
-      <p> <i class="fa-solid fa-wallet"></i> Cash on delivery available</p>
+        {% if product.category.name|lower == "food" or product.category.name|lower == "snacks" %} Instant Delivery
+      </p>
+      {% else %} Delivery in 2-3 days {% endif %}
+
+      <p><i class="fa-solid fa-wallet"></i> Cash on delivery available</p>
     </div>
 
     <div class="vendor-section">
       <div class="vendor-header">
-          <h3>Vendor</h3>
+        <h3>Vendor</h3>
       </div>
-      
+
       <div class="vendor-info">
-          <img src="{{vendor.image.url}}" alt="Vendor Logo" class="vendor-logo">
-          <div class="vendor-details">
-            <h4>{{ vendor.name }}</h4>
-            <div class="vendor-rating">
-              <span class="stars">★★★★★</span>
-              <span class="reviews">(32 reviews)</span>
-            </div>
+        <img src="{{vendor.image.url}}" alt="Vendor Logo" class="vendor-logo" />
+        <div class="vendor-details">
+          <h4>{{ vendor.name }}</h4>
+          <div class="vendor-rating">
+            <span class="stars">★★★★★</span>
+            <span class="reviews">(32 reviews)</span>
           </div>
         </div>
-        <hr>
-      
-        <div class="vendor-contact">
-          <p><strong>Address:</strong> {{ vendor.address }} </p>
-          <p><strong>Contact Seller:</strong> {{vendor.contact}} </p>
       </div>
-        <hr/>
+      <hr />
+
+      <div class="vendor-contact">
+        <p><strong>Address:</strong> {{ vendor.address }}</p>
+        <p><strong>Contact Seller:</strong> {{vendor.contact}}</p>
+      </div>
+      <hr />
       <div class="vendor-stats">
-          <div class="stat">
-              <p>Rating</p>
-              <p class="stat-value">92%</p>
-          </div>
-          <div class="stat">
-              <p>Ship on time</p>
-              <p class="stat-value">100%</p>
-          </div>
-          <div class="stat">
-              <p>Chat response</p>
-              <p class="stat-value">100%</p>
-          </div>
+        <div class="stat">
+          <p>Rating</p>
+          <p class="stat-value">92%</p>
+        </div>
+        <div class="stat">
+          <p>Ship on time</p>
+          <p class="stat-value">100%</p>
+        </div>
+        <div class="stat">
+          <p>Chat response</p>
+          <p class="stat-value">100%</p>
+        </div>
       </div>
-     
+
       <a href="#" class="vendor-link">Become a Vendor? Register now</a>
-  </div>
+    </div>
 
-  {% include "ecomm/category.html" %}
-
+    {% include "ecomm/category.html" %}
   </section>
 </main>
 {% endblock body %}

@@ -8,12 +8,11 @@
       <img src="{{ product.image.url }}" alt="{{ product.name }}" />
 
       <div class="detail">
-        <a href="#">{{ product.name }}</a>
+        <a href=" {% url "products" product.id %} ">{{ product.name }}</a>
 
         <p>Rs {{ product.new_price|default:product.price }}</p>
       </div>
     </div>
     {% endfor %}
-    
   </div>
 </div>
