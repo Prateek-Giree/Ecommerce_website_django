@@ -17,19 +17,23 @@
   </head>
 <body>
   <div class="page-wrapper">
-    {% block body %} {% endblock body %}
-  </div>
+    {% include "navbar.html" %}
+    {% block body %} 
+    
+    {% endblock body %}
+    {% include "footer.html" %} 
 
+  </div>
   {% if messages %}
   <script>
-      {% for message in messages %}
-        Swal.fire({
-          icon: "{{ message.tags }}",
-          title: "{{ message }}",
-          showConfirmButton: true,
-          timer: 3000,
-        });
-      {% endfor %}
+    {% for message in messages %}
+    Swal.fire({
+      icon: "{{ message.tags }}",
+      title: "{{ message }}",
+      showConfirmButton: true,
+      timer: 3000,
+    });
+    {% endfor %}
   </script>
   {% endif %}
 </body>

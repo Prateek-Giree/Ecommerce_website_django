@@ -10,6 +10,8 @@ from django.contrib.auth.hashers import make_password,check_password
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
+from django.views.decorators.http import require_POST
+
 
 # =============================================================
 @staff_member_required
@@ -256,10 +258,10 @@ def edit_profile(request):
 def cart(request):
     if not request.user.is_authenticated:
         messages.error(request, "You need to be logged in to view your cart.")
-        return render(request, "ecomm/cart.html")  # or redirect to login
+        return render(request, "ecomm/cart.html")
 
     cart = get_object_or_404(Cart, user=request.user)
-    items = cart.items.select_related('product')  # efficient query
+    items = cart.items.select_related('product')
 
     context = {
         'cart': cart,
@@ -292,31 +294,100 @@ def remove_from_cart(request, pk):
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-
     cart, _ = Cart.objects.get_or_create(user=request.user)
+
+    try:
+        qty = int(request.POST.get('qty', 1))
+        if qty < 1:
+            qty = 1
+    except ValueError:
+        qty = 1
+
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-    
-    if not created:
-        cart_item.quantity += 1
+
+    existing_qty = cart_item.quantity if not created else 0
+    new_total_qty = existing_qty + qty
+
+    if new_total_qty > product.stock:
+        qty_to_add = product.stock - existing_qty
+        if qty_to_add > 0:
+            cart_item.quantity = existing_qty + qty_to_add
+            cart_item.save()
+            messages.warning(
+                request,
+                f"Only {qty_to_add} more items of {product.name} were added. Stock limit reached."
+            )
+        else:
+            messages.error(
+                request,
+                f"Cannot add more of {product.name}. You've already added the maximum stock available."
+            )
+    else:
+        cart_item.quantity = new_total_qty
         cart_item.save()
+        messages.success(
+            request,
+            f"{product.name} added to cart (×{qty}) successfully!"
+        )
 
-    messages.success(request, f"{product.name} added to cart successfully!")
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
 
-    # re-rendering the product page 
-    return render(request, 'ecomm/product.html', {'product': product})
+# =============================================================
+
+@login_required
+def clear_cart(request):
+    cart = Cart.objects.filter(user=request.user).first()
+    if cart:
+        CartItem.objects.filter(cart=cart).delete()
+        messages.success(request, "Your cart has been cleared.")
+    else:
+        messages.info(request, "Your cart is already empty.")
+    
+    return redirect('cart')
+
+# =============================================================
+
+
+@login_required
+@require_POST
+def update_cart(request):
+    cart = get_object_or_404(Cart, user=request.user)
+    updated = False
+
+    for item in cart.items.all():
+        input_name = f"quantity_{item.id}"
+        new_qty = request.POST.get(input_name)
+
+        try:
+            new_qty = int(new_qty)
+            if new_qty < 1:
+                new_qty = 1
+            elif new_qty > item.product.stock:
+                new_qty = item.product.stock
+
+            if item.quantity != new_qty:
+                item.quantity = new_qty
+                item.save()
+                updated = True
+        except (ValueError, TypeError):
+            continue
+
+    if updated:
+        messages.success(request, "Cart updated successfully.")
+    else:
+        messages.info(request, "No changes were made to your cart.")
+
+    return redirect('cart')
+
 
 # =============================================================
 
 def category_page(request,pk):
-     # Fetch all categories
     categories = Category.objects.filter(id=pk)
-
-    # Create a dictionary with category and its products
     category_products = {
         category: Product.objects.filter(category=category)
         for category in categories
     }
-
     context={
         "category_products": category_products
     }

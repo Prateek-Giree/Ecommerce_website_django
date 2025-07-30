@@ -15,7 +15,11 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
     path("cart/", views.cart, name="cart"),
+    path('add_to_cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path("remove_from_cart/<int:pk>", views.remove_from_cart, name="remove_from_cart"),
+    path("cart/clear/", views.clear_cart, name="clear_cart"),
+    path("cart/update/", views.update_cart, name="update_cart"),
+
 
     path("wishlist",views.wishlist, name="wishlist"),
     path('wishlist/add/<int:product_id>/', views.add_to_wishlist, name='add_to_wishlist'),

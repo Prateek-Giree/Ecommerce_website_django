@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block title %} FastCart | Products
- {% endblock title %} {% block body %} {% include "navbar.html" %} {% load static %}
+ {% endblock title %} {% block body %} {% load static %}
 
 <section class="breadcrumb">
   <a href="{% url 'index' %}"><i class="fa fa-house"></i> Home</a>
@@ -31,7 +31,8 @@
           </div>
         </div>
 
-        <form action="" method="POST">
+        <form action="{% url 'add_to_cart' product.id %}" method="POST">
+          {% csrf_token %}
           <input type="number" name="qty" id="qty" class="qty" min="1" max="15" />
           <div class="order-buttons">
             <button type="submit" name="action" value="add_to_cart">

@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block title %} FastCart | Cart {% endblock title %}
-{% block body %} {% include "navbar.html" %} {% load static %}
+{% block body %} {% load static %}
 
 <div class="cart-container">
   <div class="cart-header">
@@ -7,61 +7,78 @@
       <h1 class="cart-title">Your Cart</h1>
       <p class="cart-count">There are 1 products in your cart</p>
     </div>
-    <a href="#" class="clear-cart">🗑 Clear Cart</a>
+    <form method="POST" action="{% url 'clear_cart' %}" style="display: inline">
+      {% csrf_token %}
+      <button type="submit" class="clear-cart">
+        <i class="fa-solid fa-trash"></i> Clear Cart
+      </button>
+    </form>
   </div>
 
   <div class="Main-content">
     <div class="cart-table-container">
-      <table class="cart-table">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Title</th>
-            <th>Unit Price</th>
-            <th>Quantity</th>
-            <th>Subtotal</th>
-            <th>Remove</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- PRODUCTS -->
-          {% for item in items %}
-          <tr>
-            <td>
-              <img
-                src="{{ item.product.image.url }}"
-                alt="{{ item.product.name }}"
-                class="product-image"
-              />
-            </td>
-            <td>{{ item.product.name }}</td>
-            <td>
-              <div class="price unit-price">
-                ${{ item.product.new_price|default:item.product.price }}
-              </div>
-            </td>
-            <td>
-              <div class="quantity-control">
-                <button class="quantity-btn">-</button>
-                <input
-                  type="text"
-                  class="quantity-input"
-                  value="{{ item.quantity }}"
-                  readonly
+      <form method="POST" action="">
+        {% csrf_token %}
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Title</th>
+              <th>Unit Price</th>
+              <th>Quantity</th>
+              <th>Subtotal</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+            <tr>
+              <td>
+                <img
+                  src="{{ item.product.image.url }}"
+                  alt="{{ item.product.name }}"
+                  class="product-image"
                 />
-                <button class="quantity-btn">+</button>
-              </div>
-            </td>
-            <td><div class="subtotal">${{ item.get_total_price }}</div></td>
-            <td>
-                <a href="{% url 'remove_from_cart' item.id %}" class="remove-btn" data-item-id="{{ item.id }}">
+              </td>
+              <td>{{ item.product.name }}</td>
+              <td>
+                <div class="price unit-price">
+                  ${{ item.product.new_price|default:item.product.price }}
+                </div>
+              </td>
+              <td>
+                <input
+                  type="number"
+                  name="quantity_{{ item.id }}"
+                  value="{{ item.quantity }}"
+                  min="1"
+                  max="{{ item.product.stock }}"
+                  class="quantity-input"
+                />
+              </td>
+              <td><div class="subtotal">${{ item.get_total_price }}</div></td>
+              <td>
+                <a
+                  href="{% url 'remove_from_cart' item.id %}"
+                  class="remove-btn"
+                >
                   <i class="fa-solid fa-trash"></i>
                 </a>
-          </tr>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
 
-          {% endfor %}
-        </tbody>
-      </table>
+        <div class="cart-actions">
+          <a href="{% url 'index' %}" class="continue-shopping">
+            ← Continue Shopping
+          </a>
+          <button type="submit" class="update-cart">
+            <i class="fa-solid fa-rotate"></i> Update Cart
+          </button>
+        </div>
+      </form>
     </div>
 
     <div class="checkout-sidebar">
@@ -79,42 +96,6 @@
           <span class="summary-value" id="cart-total">${{ total }}</span>
         </div>
         <button class="checkout-btn">Proceed to Checkout →</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="cart-actions">
-    <a href="{% url 'index' %}" class="continue-shopping"> ← Continue Shopping </a>
-    <button class="update-cart">🔄 Update Cart</button>
-  </div>
-
-  <div class="bottom-sections">
-    <div class="section-card">
-      <h3 class="section-title">Calculate Shipping</h3>
-      <p class="section-subtitle">Flat rate: 5%</p>
-      <div class="form-group">
-        <select class="form-control">
-          <option>United Kingdom</option>
-          <option>United States</option>
-          <option>Canada</option>
-        </select>
-      </div>
-      <div class="form-row">
-        <input type="text" class="form-control" placeholder="State / Country" />
-        <input type="text" class="form-control" placeholder="PostCode / ZIP" />
-      </div>
-    </div>
-
-    <div class="section-card">
-      <h3 class="section-title">Apply Coupon</h3>
-      <p class="section-subtitle">Using A Promo Code?</p>
-      <div class="coupon-form">
-        <input
-          type="text"
-          class="coupon-input"
-          placeholder="Enter Your Coupon"
-        />
-        <button class="apply-btn">Apply</button>
       </div>
     </div>
   </div>

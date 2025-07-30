@@ -1,6 +1,6 @@
-{% extends "base.html" %} {% block title %} FastCart {% endblock title %}
- {% block body %} {% include "navbar.html" %} {% load static %}
- <section class="breadcrumb">
+{% extends "base.html" %} {% block title %} FastCart {% endblock title %} 
+{% block body %} {% load static %}
+<section class="breadcrumb">
   <a href="{% url 'index' %}"><i class="fa fa-house"></i> Home</a>
 </section>
 
@@ -8,71 +8,80 @@
   <section class="side">
     {% include "ecomm/category.html" %} {% include "ecomm/new_product.html" %}
   </section>
-  <section class="hero">
-    <div class="hero-container">
-      <div class="info">
-        <h1>
-          Fresh Vegetables <br />
-          Big Discount
-        </h1>
-        <p>Save up to 50% off on your first order</p>
-        <a class="button" href="">Tap to continue shopping</a>
-      </div>
-    </div>
 
-    <div class="products">
-      <div class="navs">
-        <h1>Products</h1>
-        <div class="navs-list">
-          <a href="#">All</a>
-          <a href="#">Fruits</a>
-          <a href="#">Vegetables</a>
-          <a href="#">Dairy</a>
-          <a href="#">Meat</a>
+  <section class="left">
+    <section class="hero">
+      <div class="hero-container">
+        <div class="info">
+          <h1>
+            Fresh Vegetables <br />
+            Big Discount
+          </h1>
+          <p>Save up to 50% off on your first order</p>
+          <a class="button" href="">Tap to continue shopping</a>
         </div>
       </div>
+    </section>
 
-      <div class="cards">
-        {% for product in recent_50_products %}
-        <div class="product-grid">
-          <!-- Loop through the recent products -->
-          <div class="product-item">
-            {% if product.new_price %}
-            <small class="off">
-              -{{ product.discount_percentage|floatformat:0 }}%
-            </small>
-            {% endif %}
-            <a style="text-decoration: none" href=" {% url "products" product.id %} ">
-              <img src="{{ product.image.url }}" alt="{{ product.name }}" />
-              <small>{{ product.category.name }}</small>
-              <h3>{{ product.name }}</h3>
-            </a>
-            By
-            <a style="text-decoration: none" href="">
-              <span>{{ product.vendor.name }}</span>
-            </a>
-            <br />
+    <section class="p">
+      <div class="products">
+        <div class="navs">
+          <h1>Products</h1>
+          <div class="navs-list">
+            <a href="#">All</a>
+            <a href="#">Fruits</a>
+            <a href="#">Vegetables</a>
+            <a href="#">Dairy</a>
+            <a href="#">Meat</a>
+          </div>
+        </div>
 
-            <div class="price-btn">
-              <div class="price">
-                <span>Rs.{{ product.new_price|default:product.price }}</span>
-                {% if product.new_price %}
-                <p><s>Rs.{{ product.price }}</s></p>
-                {% endif %}
-              </div>
+        <div class="cards">
+          {% for product in recent_50_products %}
+          <div class="product-grid">
+            <!-- Loop through the recent products -->
+            <div class="product-item">
+              {% if product.new_price %}
+              <small class="off">
+                -{{ product.discount_percentage|floatformat:0 }}%
+              </small>
+              {% endif %}
+              <a
+                style="text-decoration: none"
+                href=" {% url 'products' product.id %} "
+              >
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" />
+                <small>{{ product.category.name }}</small>
+                <h3>{{ product.name }}</h3>
+              </a>
+              By
+              <a style="text-decoration: none" href="">
+                <span>{{ product.vendor.name }}</span>
+              </a>
+              <br />
 
-              <div class="btns">
-                <a class="add" href=""
-                  ><i class="fa fa-cart-shopping"></i>Add</a
-                >
-                <a href=""><i class="fa-regular fa-heart"></i></a>
+              <div class="price-btn">
+                <div class="price">
+                  <span>Rs.{{ product.new_price|default:product.price }}</span>
+                  {% if product.new_price %}
+                  <p><s>Rs.{{ product.price }}</s></p>
+                  {% endif %}
+                </div>
+                <div class="btns">
+                  <a class="add" href="{% url 'add_to_cart' product.id %}"
+                    ><i class="fa fa-cart-shopping"></i>Add</a
+                  >
+                  <a href="{% url 'add_to_wishlist' product.id %}"
+                    ><i class="fa-regular fa-heart"></i
+                  ></a>
+                </div>
               </div>
             </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       </div>
-    </div>
+    </section>
   </section>
 </section>
 
