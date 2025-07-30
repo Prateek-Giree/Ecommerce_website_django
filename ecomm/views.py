@@ -11,10 +11,15 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 
+# =============================================================
 @staff_member_required
 def analytics_view(request):
     # Prepare data for charts (e.g., order stats, product sales, etc.)
     return render(request, "ecomm/analytics.html")
+
+# =============================================================
+def about(request):
+    return render(request,"ecomm/about_us.html")
 
 
 # =============================================================
@@ -282,23 +287,6 @@ def remove_from_cart(request, pk):
 
     return redirect('cart')
 
-
-# =============================================================
-
-@login_required
-def add_to_wishlist(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-
-    # Check if the product is already in the user's wishlist
-    if Wishlist.objects.filter(user=request.user, product=product).exists():
-        messages.info(request, "Product already in your wishlist.")
-    else:
-        Wishlist.objects.create(user=request.user, product=product)
-        messages.success(request, "Product added to your wishlist.")
-
-    return render(request, 'ecomm/products.html', {'product': product})
-
-
 # =============================================================
 
 @login_required
@@ -317,6 +305,7 @@ def add_to_cart(request, product_id):
     # re-rendering the product page 
     return render(request, 'ecomm/product.html', {'product': product})
 
+# =============================================================
 
 def category_page(request,pk):
      # Fetch all categories
@@ -332,3 +321,33 @@ def category_page(request,pk):
         "category_products": category_products
     }
     return render(request, "ecomm/category_page.html", context)
+
+# =============================================================
+
+@login_required
+def add_to_wishlist(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
+
+    if created:
+        messages.success(request, f"{product.name} added to wishlist successfully!")
+    else:
+        messages.info(request, f" {product.name} is already in your wishlist.")
+
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
+
+
+@login_required
+def remove_from_wishlist(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    Wishlist.objects.filter(user=request.user, product=product).delete()
+    messages.success(request, f"{product.name} removed from wishlist successfully!")
+
+    return redirect('wishlist')
+
+
+@login_required
+def wishlist(request):
+    wishlist_items = Wishlist.objects.filter(user=request.user).select_related('product')
+    return render(request, 'ecomm/wishlist.html', {'wishlist_items': wishlist_items})
+# =============================================================

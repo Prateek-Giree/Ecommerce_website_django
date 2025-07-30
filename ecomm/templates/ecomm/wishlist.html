@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %} FastCart | Wishlist {% endblock title %}
+{% block body %}
+{% include "navbar.html" %}
+{% load static %}
+
+<div class="wishlist-container">
+  <h1 class="page-title">My Wishlist</h1>
+
+  <div class="wishlist-table">
+    <div class="table-header">
+      <div></div>
+      <div>Product name</div>
+      <div>Unit price</div>
+      <div>Stock status</div>
+      <div></div>
+    </div>
+
+    {% if wishlist_items %}
+      {% for item in wishlist_items %}
+      <div class="product-row">
+        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+
+        <div class="wproduct-info">
+          <div class="wproduct-name">{{ item.product.name }}</div>
+          <div class="date-added">Added on: {{ item.added_at|date:"F j, Y" }}</div>
+        </div>
+
+        <div class="wprice">
+          {% if item.product.new_price %}
+            <span class="original-price">Rs {{ item.product.price }}</span>
+            Rs {{ item.product.new_price }}
+          {% else %}
+            Rs {{ item.product.price }}
+          {% endif %}
+        </div>
+
+        <div class="stock-status">
+          {% if item.product.stock > 0 %}
+            In Stock
+          {% else %}
+            <span style="color: red;">Out of Stock</span>
+          {% endif %}
+        </div>
+
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <!-- Add to cart button -->
+          <form method="POST" action="">
+            {% csrf_token %}
+            <button class="add-to-cart-btn" type="submit">Add to cart</button>
+          </form>
+
+          <!-- Remove from wishlist button -->
+          <form method="POST" action="{% url 'remove_from_wishlist' item.product.id %}">
+            {% csrf_token %}
+            <button class="remove-btn" type="submit">×</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p style="padding: 20px; text-align: center;">Your wishlist is empty.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock body %}
