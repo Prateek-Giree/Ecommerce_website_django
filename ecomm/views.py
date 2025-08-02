@@ -1,5 +1,6 @@
 from .models import Category, Product,Cart, CartItem,Wishlist,DeliveryAddress,UserProfile
 from django.db.models import Count
+from .models import Order, OrderItem, CartItem
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -11,6 +12,7 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
+from django.db import transaction
 
 
 # =============================================================
@@ -42,7 +44,7 @@ def register(request):
         password=request.POST.get("pass")
         cpass=request.POST.get("cpass")
         
-        print(fullname,email,phone,address,delivery_addr_id,password,cpass)
+        # print(fullname,email,phone,address,delivery_addr_id,password,cpass)
         if password != cpass:
             messages.error(request, "Password do not match")
             return redirect('register')
@@ -167,6 +169,10 @@ def profile(request,pk):
     # Get the user's cart
     cart, created = Cart.objects.get_or_create(user=user)
     cart_items = CartItem.objects.filter(cart=cart)
+
+    #Get users order
+    order_items = OrderItem.objects.filter(order__user=user)
+    order_item_count = order_items.count()
     
     context={
         "user": user,
@@ -174,6 +180,7 @@ def profile(request,pk):
         "delivery_address": delivery_address,
         "wishlist": wishlist,
         "cart_items": cart_items,
+        "order_item_count": order_item_count,
     }
     return render(request, "ecomm/profile.html",context)
 
@@ -216,6 +223,8 @@ def edit_profile(request):
     wishlist = Wishlist.objects.filter(user=user)
     cart, _ = Cart.objects.get_or_create(user=user)
     cart_items = CartItem.objects.filter(cart=cart)
+    order_items = OrderItem.objects.filter(order__user=user)
+    order_item_count = order_items.count()
 
     # Change password
     if request.method == "POST" and "change_password" in request.POST:
@@ -245,6 +254,8 @@ def edit_profile(request):
         "wishlist": wishlist,
         "cart_items": cart_items,
         "delivery_addresses": delivery_addresses,
+        "order_item_count": order_item_count,
+
     }
 
     return render(request, "ecomm/edit_profile.html", context)
@@ -262,10 +273,13 @@ def cart(request):
 
     cart = get_object_or_404(Cart, user=request.user)
     items = cart.items.select_related('product')
+    cart_items = CartItem.objects.filter(cart=cart)
+
 
     context = {
         'cart': cart,
         'items': items,
+        'cart_items':cart_items,
         'total': cart.total_price(),
     }
     return render(request, "ecomm/cart.html", context)
@@ -422,3 +436,81 @@ def wishlist(request):
     wishlist_items = Wishlist.objects.filter(user=request.user).select_related('product')
     return render(request, 'ecomm/wishlist.html', {'wishlist_items': wishlist_items})
 # =============================================================
+
+
+@login_required(login_url='login')
+def view_order(request):
+    orders = Order.objects.filter(user=request.user).prefetch_related('items', 'items__product').order_by('-date_ordered')
+
+    context = {
+        'orders': orders,
+    }
+    return render(request, "ecomm/order.html", context)
+
+
+@login_required(login_url='login')
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    if order.status == "Pending":
+        with transaction.atomic():
+            for item in order.items.all():
+                product = item.product
+                product.stock += item.quantity
+                product.save()
+            order.delete()
+        messages.success(request, "Your order has been cancelled")
+    else:
+        messages.error(request, "Only pending orders can be cancelled.")
+
+    return redirect('view_order')
+
+
+
+
+@login_required
+def checkout_view(request):
+    user = request.user
+    cart = Cart.objects.get(user=user)
+    profile = UserProfile.objects.get(user=user)
+    cart_items = cart.items.all()
+
+    if request.method == 'POST':
+        # Start a transaction
+        with transaction.atomic():
+            order = Order.objects.create(
+                user=user,
+                name=user.get_full_name() or user.username,
+                address=profile.address,
+                total_price=cart.total_price()
+            )
+
+            for item in cart_items:
+                # Check stock
+                if item.quantity > item.product.stock:
+                    messages.error(request, f"Insufficient stock for {item.product.name}.")
+                    return redirect('checkout')
+
+                # Create order item
+                OrderItem.objects.create(
+                    order=order,
+                    product=item.product,
+                    quantity=item.quantity,
+                    price=item.get_total_price()
+                )
+
+                # Reduce stock
+                item.product.stock -= item.quantity
+                item.product.save()
+
+            # Clear the cart
+            cart.items.all().delete()
+
+            messages.success(request, "Order placed successfully!")
+            return redirect('index') 
+
+    return render(request, 'ecomm/checkout.html', {
+        'profile': profile,
+        'cart': cart,
+        'cart_items': cart_items
+    })

@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path
 from . import views 
+from django.shortcuts import HttpResponse
+
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -30,4 +32,8 @@ urlpatterns = [
 
     path("category/<int:pk>",views.category_page,name="category"),
     path("analytics", views.analytics_view, name="admin-analytics"),
+
+    path('checkout/', views.checkout_view, name='checkout'),
+    path("orders/", views.view_order, name="view_order"),
+    path("orders/cancel/<int:order_id>/", views.cancel_order, name="cancel_order"),
 ]

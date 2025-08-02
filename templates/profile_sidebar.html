@@ -59,6 +59,23 @@
                     >{{ wishlist|length }}</span>
                 </a>
             </li>
+
+            <li class="nav-item">
+                <a href="{% url "view_order" %}" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-truck"></i></span>
+                    My Order
+                    <span
+                        style="
+                            margin-left: auto;
+                            background: rgba(255, 255, 255, 0.3);
+                            padding: 2px 8px;
+                            border-radius: 12px;
+                            font-size: 12px;
+                        "
+                    >{{ order_item_count }}</span>
+                </a>
+            </li>
+
         </ul>
     </div>
 

@@ -1,11 +1,10 @@
 {% extends "base.html" %} {% block title %} FastCart | Cart {% endblock title %}
 {% block body %} {% load static %}
-
 <div class="cart-container">
   <div class="cart-header">
     <div>
       <h1 class="cart-title">Your Cart</h1>
-      <p class="cart-count">There are 1 products in your cart</p>
+      <p class="cart-count">There are {{ cart_items|length }} products in your cart</p>
     </div>
     <form method="POST" action="{% url 'clear_cart' %}" style="display: inline">
       {% csrf_token %}
@@ -17,7 +16,7 @@
 
   <div class="Main-content">
     <div class="cart-table-container">
-      <form method="POST" action="">
+      <form method="POST" action="{% url "update_cart" %}">
         {% csrf_token %}
         <table class="cart-table">
           <thead>
@@ -43,7 +42,7 @@
               <td>{{ item.product.name }}</td>
               <td>
                 <div class="price unit-price">
-                  ${{ item.product.new_price|default:item.product.price }}
+                  Rs {{ item.product.new_price|default:item.product.price }}
                 </div>
               </td>
               <td>
@@ -56,20 +55,18 @@
                   class="quantity-input"
                 />
               </td>
-              <td><div class="subtotal">${{ item.get_total_price }}</div></td>
+              <td><div class="subtotal">Rs {{ item.get_total_price }}</div></td>
               <td>
-                <a
-                  href="{% url 'remove_from_cart' item.id %}"
-                  class="remove-btn"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </a>
+               <a href="{% url 'remove_from_cart' item.id %}" class="remove-btn"
+                onclick="return confirm('Are you sure you want to remove this item from your cart?');" >
+                <i class="fa-solid fa-trash"></i>
+              </a>
               </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
-
+        {% if items %}
         <div class="cart-actions">
           <a href="{% url 'index' %}" class="continue-shopping">
             ← Continue Shopping
@@ -78,6 +75,7 @@
             <i class="fa-solid fa-rotate"></i> Update Cart
           </button>
         </div>
+        {% endif %}
       </form>
     </div>
 
@@ -85,7 +83,7 @@
       <div class="summary-card">
         <div class="summary-row">
           <span class="summary-label">Subtotal</span>
-          <span class="summary-value" id="cart-subtotal">${{ total }}</span>
+          <span class="summary-value" id="cart-subtotal">Rs {{ total }}</span>
         </div>
         <div class="summary-row">
           <span class="summary-label">Shipping</span>
@@ -93,9 +91,10 @@
         </div>
         <div class="summary-row">
           <span class="summary-label">Total</span>
-          <span class="summary-value" id="cart-total">${{ total }}</span>
+          <span class="summary-value" id="cart-total">Rs {{ total }}</span>
         </div>
-        <button class="checkout-btn">Proceed to Checkout →</button>
+        <a href="{% url "checkout" %}" class="checkout-btn">Proceed to Checkout →</a>
+
       </div>
     </div>
   </div>

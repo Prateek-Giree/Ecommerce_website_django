@@ -44,7 +44,7 @@
 
         <div style="display: flex; gap: 8px; align-items: center;">
           <!-- Add to cart button -->
-          <form method="POST" action="">
+          <form method="POST" action="{% url 'add_to_cart' item.product.id %}">
             {% csrf_token %}
             <button class="add-to-cart-btn" type="submit">Add to cart</button>
           </form>

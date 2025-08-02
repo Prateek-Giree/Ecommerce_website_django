@@ -84,21 +84,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // CART 
 document.addEventListener("DOMContentLoaded", function () {
-  // Add listeners to all +/- buttons
-  document.querySelectorAll(".quantity-btn").forEach(button => {
-    button.addEventListener("click", function () {
-      const row = button.closest("tr");
-      const qtyInput = row.querySelector(".quantity-input");
-      let quantity = parseInt(qtyInput.value);
-
-      // Determine whether "+" or "-"
-      if (button.textContent.trim() === "+") {
-        quantity++;
-      } else if (quantity > 1) {
-        quantity--;
-      }
-
-      qtyInput.value = quantity;
+  // Listen for changes in any quantity input
+  document.querySelectorAll(".quantity-input").forEach(input => {
+    input.addEventListener("input", function () {
+      const row = input.closest("tr");
       updateRowSubtotal(row);
       updateCartTotal();
     });
@@ -112,52 +101,22 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function updateRowSubtotal(row) {
-  const price = parseFloat(row.querySelector(".unit-price").textContent.replace("$", "").trim());
-  const qty = parseInt(row.querySelector(".quantity-input").value);
+  const priceText = row.querySelector(".unit-price").textContent.replace("Rs", "").trim();
+  const price = parseFloat(priceText);
+  const qty = parseInt(row.querySelector(".quantity-input").value) || 0;
+
   const subtotal = (price * qty).toFixed(2);
-  row.querySelector(".subtotal").textContent = `$${subtotal}`;
+  row.querySelector(".subtotal").textContent = `Rs${subtotal}`;
 }
 
 function updateCartTotal() {
   let total = 0;
   document.querySelectorAll(".subtotal").forEach(cell => {
-    total += parseFloat(cell.textContent.replace("$", ""));
+    const amount = parseFloat(cell.textContent.replace("Rs", "").trim());
+    total += isNaN(amount) ? 0 : amount;
   });
+
   total = total.toFixed(2);
-  document.getElementById("cart-subtotal").textContent = `$${total}`;
-  document.getElementById("cart-total").textContent = `$${total}`;
+  document.getElementById("cart-subtotal").textContent = `Rs${total}`;
+  document.getElementById("cart-total").textContent = `Rs${total}`;
 }
-
-
-
-
-//Wishlist AJAX
-document.addEventListener("DOMContentLoaded", function () {
-  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-
-  document.querySelectorAll(".wishlist-btn").forEach(button => {
-    button.addEventListener("click", function () {
-      const productId = this.dataset.productId;
-      const action = this.dataset.action;
-
-      fetch("{% url 'toggle_wishlist_ajax' %}", {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": csrftoken,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `product_id=${productId}&action=${action}`,
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === "added") {
-            this.innerHTML = '<i class="fa fa-heart-broken"></i> Remove from Wishlist';
-            this.dataset.action = "remove";
-          } else if (data.status === "removed") {
-            this.innerHTML = '<i class="fa fa-heart"></i> Add to Wishlist';
-            this.dataset.action = "add";
-          }
-        });
-    });
-  });
-});
