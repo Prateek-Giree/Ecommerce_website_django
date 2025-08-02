@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock title %}
+{% block body %}
+<div class="chekout-container">
+  <div class="checkout-header">
+    <h2>Checkout Summary</h2>
+  </div>
+
+  <div class="checkout-content">
+    <h3>User Details</h3>
+    <div class="user-details">
+      <ul>
+        <li>
+          <strong>Name:</strong>
+          <span>{{ user.get_full_name|default:user.username }}</span>
+        </li>
+        <li><strong>Email:</strong> <span>{{ user.email }}</span></li>
+        <li><strong>Phone:</strong> <span>{{ profile.phone }}</span></li>
+        <li><strong>Address:</strong> <span>{{ profile.address }}</span></li>
+        <li>
+          <strong>Delivery Address:</strong>
+          <span>{{ profile.delivery_address }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="checkout-cart-section">
+      <h3>Your Cart</h3>
+      <table class="checkout-cart-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cart_items %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.product.new_price|default:item.product.price }}</td>
+            <td>{{ item.get_total_price }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="total-section">
+      <p class="total-price">Total Price: Rs. {{ cart.total_price }}</p>
+    </div>
+
+    <form method="post" class="order-form">
+      {% csrf_token %}
+      <button type="submit" class="place-order-btn">Place Order</button>
+    </form>
+  </div>
+</div>
+{% endblock body %}

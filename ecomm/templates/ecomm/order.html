@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %} FastCart | Order {% endblock title %}
+
+{% block body %}
+<div class="o-container">
+  <div class="order-page-header">
+    <h1 class="order-page-title">My Orders</h1>
+    <p class="order-page-subtitle">Track and manage your order history</p>
+  </div>
+
+  <div class="orders-container">
+    {% for order in orders %}
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-info">
+          <div class="order-info-item">
+            <span class="order-info-label">Order ID</span>
+            <span class="order-info-value">#ORD-0{{ order.id }}fstcrt</span>
+          </div>
+          <div class="order-info-item">
+            <span class="order-info-label">Receiver</span>
+            <span class="order-info-value">{{ request.user.first_name }}</span>
+          </div>
+          <div class="order-info-item">
+            <span class="order-info-label">Delivery Address</span>
+            <span class="order-info-value">{{ request.user.userprofile.delivery_address }}</span>
+          </div>
+          <div class="order-info-item">
+            <span class="order-info-label">Order Date</span>
+            <span class="order-info-value">{{ order.date_ordered|date:"F d, Y" }}</span>
+          </div>
+          <div class="order-info-item">
+            <span class="order-info-label">Total Amount</span>
+            <span class="order-info-value order-total-price">Rs. {{ order.total_price }}</span>
+          </div>
+        </div>
+        <div class="order-actions">
+        {% if order.status|lower == "getting ready for delivery" %}
+          <span class="order-status-badge order-status-ready">{{ order.status }}</span>
+        {% else %}
+          <span class="order-status-badge order-status-{{ order.status|lower }}">{{ order.status }}</span>
+        {% endif %}
+          
+        {% if order.status == "Pending" %}
+          <form action="{% url 'cancel_order' order.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="order-cancel-btn">Cancel Order</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="order-items">
+        <table class="order-items-table">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in order.items.all %}
+            <tr>
+              <td data-label="Product" class="order-product-name">{{ item.product.name }}</td>
+              <td data-label="Quantity" class="order-quantity">{{ item.quantity }}</td>
+              <td data-label="Price" class="order-item-price">Rs. {{ item.price }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% empty %}
+    <p>No orders found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock body %}
