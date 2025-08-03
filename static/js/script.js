@@ -80,43 +80,55 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// CART
+document.addEventListener("DOMContentLoaded", () => {
+  const checkboxes = document.querySelectorAll("input[name='selected_items']");
+  const quantityInputs = document.querySelectorAll(".quantity-input");
 
+  checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", updateCartTotal);
+  });
 
-// CART 
-document.addEventListener("DOMContentLoaded", function () {
-  // Listen for changes in any quantity input
-  document.querySelectorAll(".quantity-input").forEach(input => {
-    input.addEventListener("input", function () {
+  quantityInputs.forEach((input) => {
+    input.addEventListener("input", () => {
       const row = input.closest("tr");
       updateRowSubtotal(row);
       updateCartTotal();
     });
   });
 
-  // Initial calculation on page load
-  document.querySelectorAll("tbody tr").forEach(row => {
-    updateRowSubtotal(row);
-  });
+  document
+    .querySelectorAll("tbody tr")
+    .forEach((row) => updateRowSubtotal(row));
   updateCartTotal();
 });
 
 function updateRowSubtotal(row) {
-  const priceText = row.querySelector(".unit-price").textContent.replace("Rs", "").trim();
-  const price = parseFloat(priceText);
-  const qty = parseInt(row.querySelector(".quantity-input").value) || 0;
-
+  const priceText = row
+    .querySelector(".unit-price")
+    .textContent.replace("Rs", "")
+    .trim();
+  const price = parseFloat(priceText) || 0;
+  const qtyInput = row.querySelector(".quantity-input");
+  const qty = parseInt(qtyInput.value) || 0;
   const subtotal = (price * qty).toFixed(2);
-  row.querySelector(".subtotal").textContent = `Rs${subtotal}`;
+  row.querySelector(".subtotal").textContent = `Rs ${subtotal}`;
 }
 
 function updateCartTotal() {
   let total = 0;
-  document.querySelectorAll(".subtotal").forEach(cell => {
-    const amount = parseFloat(cell.textContent.replace("Rs", "").trim());
-    total += isNaN(amount) ? 0 : amount;
+  document.querySelectorAll("tbody tr").forEach((row) => {
+    const checkbox = row.querySelector("input[type='checkbox']");
+    if (checkbox.checked) {
+      const subtotalText = row
+        .querySelector(".subtotal")
+        .textContent.replace("Rs", "")
+        .trim();
+      total += parseFloat(subtotalText) || 0;
+    }
   });
 
   total = total.toFixed(2);
-  document.getElementById("cart-subtotal").textContent = `Rs${total}`;
-  document.getElementById("cart-total").textContent = `Rs${total}`;
+  document.getElementById("cart-subtotal").textContent = `Rs ${total}`;
+  document.getElementById("cart-total").textContent = `Rs ${total}`;
 }

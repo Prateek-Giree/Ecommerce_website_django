@@ -233,8 +233,3 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success"
     }
 }
-
-
-
-KHALTI_PUBLIC_KEY = "live_public_key_f5e1e2ae24634c3194b0036e56c680b7"
-KHALTI_SECRET_KEY = "live_secret_key_41f75853b2394d1293456f353b4989e0"

@@ -24,36 +24,47 @@
       </ul>
     </div>
 
-    <div class="checkout-cart-section">
-      <h3>Your Cart</h3>
-      <table class="checkout-cart-table">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Qty</th>
-            <th>Price</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in cart_items %}
-          <tr>
-            <td>{{ item.product.name }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.product.new_price|default:item.product.price }}</td>
-            <td>{{ item.get_total_price }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <div class="total-section">
-      <p class="total-price">Total Price: Rs. {{ cart.total_price }}</p>
-    </div>
-
     <form method="post" class="order-form">
       {% csrf_token %}
+    <input type="hidden" name="action_type" value="place_order">
+
+      <div class="checkout-cart-section">
+        <h3>Your Cart</h3>
+        <table class="checkout-cart-table">
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart_items %}
+            <tr>
+              <td>
+                <input
+                  type="checkbox"
+                  name="selected_items"
+                  value="{{ item.id }}"
+                  checked
+                />
+              </td>
+              <td>{{ item.product.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.product.new_price|default:item.product.price }}</td>
+              <td>{{ item.get_total_price }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="total-section">
+        <p class="total-price">Total Price: Rs. {{ cart.total_price }}</p>
+      </div>
+
       <button type="submit" class="place-order-btn">Place Order</button>
     </form>
   </div>

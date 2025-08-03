@@ -16,9 +16,9 @@
     <div class="footer-section footer-nav-section">
       <h3>Quick Links</h3>
       <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="#about">About Us</a></li>
+        <li><a href="{% url "index" %}">Home</a></li>
+        <li><a href="{% url 'about' %}#contacts">Contact</a></li>
+        <li><a href="{% url "about" %}">About Us</a></li>
         <li><a href="#category">Category</a></li>
       </ul>
     </div>
@@ -27,14 +27,14 @@
     <div class="footer-section contact-section">
       <h3>Get In Touch</h3>
       <div class="contact-info">
-        <div class="contact-item">📧 hello@shopix.com</div>
-        <div class="contact-item">📞 +1 (555) 123-4567</div>
-        <div class="contact-item">📍 123 Commerce St, City</div>
+        <div class="contact-item"><i class="fa-solid fa-envelope"></i> fastcart.support@gmail.com </div>
+        <div class="contact-item"><i class="fa-solid fa-phone"></i> 056-56000</div>
+        <div class="contact-item"><i class="fa-solid fa-location-dot"></i> Khairahani-08 Parsa Chitwan</div>
       </div>
       <div class="social-links">
-        <a href="#" class="social-icon" title="Facebook">📘</a>
-        <a href="#" class="social-icon" title="Instagram">📷</a>
-        <a href="#" class="social-icon" title="Email">✉️</a>
+        <a href="#" class="social-icon" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
+        <a href="#" class="social-icon" title="Instagram"><i class="fa-brands fa-square-instagram"></i></a>
+        <a href="#" class="social-icon" title="linkedin"><i class="fa-brands fa-linkedin"></i></a>
       </div>
     </div>
   </div>

@@ -7,7 +7,7 @@
             {% if user_profile.profile_image %}
                 <img src="{{ user_profile.profile_image.url }}" alt="Profile Image" class="profile-img" />
             {% else %}
-                <img src="{% static 'assets/logo.png' %}" alt="Profile Image" class="profile-img" />
+                <img src="{% static 'assets/default_profile.png' %}" alt="Profile Image" class="profile-img" />
             {% endif %}
         </div>
         <div class="greeting">Hello, {{ user.first_name|default:"User" }} </div>

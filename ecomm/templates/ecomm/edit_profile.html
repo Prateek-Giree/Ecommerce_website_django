@@ -19,7 +19,12 @@
       <p>Update your personal information and account settings</p>
     </div>
 
-    <form id="personalDetailsForm" method="POST" action="{% url "edit_profile" %}">
+    <form
+      enctype="multipart/form-data"
+      id="personalDetailsForm"
+      method="POST"
+      action="{% url 'edit_profile' %}"
+    >
       {% csrf_token %}
       <div class="form-section">
         <h2 class="section-title">Edit Personal Details</h2>
@@ -76,11 +81,11 @@
           <div class="form-group">
             <label for="deliveryAddress">Default Delivery Address</label>
             <select id="deliveryAddress" name="delivery_addr">
-              <option value="{{delivery_address.id}}"> {{delivery_address}} </option>
+              <option value="{{delivery_address.id}}">
+                {{delivery_address}}
+              </option>
               {% for address in delivery_addresses %}
-              <option value="{{ address.id }}"
-                >{{ address.location }}</option
-              >
+              <option value="{{ address.id }}">{{ address.location }}</option>
               {% endfor %}
             </select>
             <span class="error"></span>
@@ -90,25 +95,42 @@
             <label for="address"
               >Primary Address <span class="required">*</span></label
             >
-            <textarea
-              id="address"
-              name="address"
-              required
-            > {{user_profile.address}} </textarea
+            <textarea id="address" name="address" required>
+            {{user_profile.address}} </textarea
             >
             <span class="error"></span>
           </div>
         </div>
-
+          
+        <div class="form-group">
+            <label for="profileImage">Profile Image</label>
+            {% if user_profile.profile_image %}
+            <div style="margin-bottom: 10px">
+              <img
+                src="{{ user_profile.profile_image.url }}"
+                alt="Current Image"
+                style="height: 80px; border-radius: 8px"
+              />
+            </div>
+            {% endif %}
+            <input
+              type="file"
+              id="profileImage"
+              name="profile_image"
+              accept="image/*"
+            />
+            <span class="error"></span>
+          </div>
         <!-- Personal Details Action Buttons -->
         <div class="btn-group">
-          <button
+          <a
+            onclick="return confirm('Are you sure want to cancel?')"
+            href="{% url 'profile' request.user.id %}"
             type="button"
             class="btn btn-secondary"
-            onclick="resetPersonalForm()"
           >
             Cancel
-          </button>
+          </a>
           <button type="submit" name="update_details" class="btn btn-primary">
             Update Personal Details
           </button>
@@ -117,7 +139,7 @@
     </form>
 
     <!-- Change Password Form -->
-    <form id="passwordForm" method="POST" action="{% url "edit_profile" %}">
+    <form id="passwordForm" method="POST" action="{% url 'edit_profile' %}">
       {% csrf_token %}
       <div class="form-section">
         <h2 class="section-title">Change Password</h2>
@@ -143,8 +165,8 @@
               <span
                 class="input-icon"
                 onclick="togglePassword('currentPassword')"
-                ><i class="fa-solid fa-eye"></i></span
-              >
+                ><i class="fa-solid fa-eye"></i
+              ></span>
             </div>
           </div>
 
@@ -160,8 +182,8 @@
                 required
               />
               <span class="input-icon" onclick="togglePassword('newPassword')"
-                ><i class="fa-solid fa-eye"></i></span
-              >
+                ><i class="fa-solid fa-eye"></i
+              ></span>
             </div>
             <div class="password-strength" id="passwordStrength">
               <div class="strength-bar">
@@ -189,8 +211,8 @@
               <span
                 class="input-icon"
                 onclick="togglePassword('confirmPassword')"
-                ><i class="fa-solid fa-eye"></i></span
-              >
+                ><i class="fa-solid fa-eye"></i
+              ></span>
             </div>
             <div id="passwordMatch" class="password-help"></div>
           </div>
@@ -198,14 +220,18 @@
 
         <!-- Password Change Action Buttons -->
         <div class="btn-group">
-          <button
+          <a
+            onclick="return confirm('Are you sure want to cancel?')"
+            href="{% url 'profile' request.user.id %}"
             type="button"
             class="btn btn-secondary"
             onclick="resetPasswordForm()"
           >
             Cancel
+          </a>
+          <button type="submit" name="change_password" class="btn btn-primary">
+            Change Password
           </button>
-          <button type="submit" name="change_password" class="btn btn-primary">Change Password</button>
         </div>
       </div>
     </form>

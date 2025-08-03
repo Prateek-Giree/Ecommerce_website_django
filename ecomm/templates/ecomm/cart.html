@@ -1,10 +1,12 @@
-{% extends "base.html" %} {% block title %} FastCart | Cart {% endblock title %}
-{% block body %} {% load static %}
+{% extends "base.html" %} {% load static %} {% block title %}FastCart | Cart
+{% endblock title %} {% block body %}
 <div class="cart-container">
   <div class="cart-header">
     <div>
       <h1 class="cart-title">Your Cart</h1>
-      <p class="cart-count">There are {{ cart_items|length }} products in your cart</p>
+      <p class="cart-count">
+        There are {{ cart_items|length }} products in your cart
+      </p>
     </div>
     <form method="POST" action="{% url 'clear_cart' %}" style="display: inline">
       {% csrf_token %}
@@ -16,86 +18,86 @@
 
   <div class="Main-content">
     <div class="cart-table-container">
-      <form method="POST" action="{% url "update_cart" %}">
+      <form method="POST" action="{% url 'checkout' %}">
         {% csrf_token %}
-        <table class="cart-table">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Title</th>
-              <th>Unit Price</th>
-              <th>Quantity</th>
-              <th>Subtotal</th>
-              <th>Remove</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in items %}
-            <tr>
-              <td>
-                <img
-                  src="{{ item.product.image.url }}"
-                  alt="{{ item.product.name }}"
-                  class="product-image"
-                />
-              </td>
-              <td>{{ item.product.name }}</td>
-              <td>
-                <div class="price unit-price">
-                  Rs {{ item.product.new_price|default:item.product.price }}
-                </div>
-              </td>
-              <td>
-                <input
-                  type="number"
-                  name="quantity_{{ item.id }}"
-                  value="{{ item.quantity }}"
-                  min="1"
-                  max="{{ item.product.stock }}"
-                  class="quantity-input"
-                />
-              </td>
-              <td><div class="subtotal">Rs {{ item.get_total_price }}</div></td>
-              <td>
-               <a href="{% url 'remove_from_cart' item.id %}" class="remove-btn"
-                onclick="return confirm('Are you sure you want to remove this item from your cart?');" >
-                <i class="fa-solid fa-trash"></i>
-              </a>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        {% if items %}
-        <div class="cart-actions">
-          <a href="{% url 'index' %}" class="continue-shopping">
-            ← Continue Shopping
-          </a>
-          <button type="submit" class="update-cart">
-            <i class="fa-solid fa-rotate"></i> Update Cart
-          </button>
+        <input type="hidden" name="action_type" value="proceed_to_checkout" />
+
+        <div>
+          <table class="cart-table">
+            <thead>
+              <tr>
+                <th>Select</th>
+                <th>Product</th>
+                <th>Title</th>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+                <th style="width: 200px;">Subtotal</th>
+                <th>Remove</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in items %}
+              <tr>
+                <td>
+                  <input type="checkbox" name="selected_items" value="{{ item.id }}" />
+                </td>
+                <td>
+                  <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-image" />
+                </td>
+                <td>{{ item.product.name }}</td>
+                <td>
+                  <div class="price unit-price">
+                    Rs {{ item.product.new_price|default:item.product.price }}
+                  </div>
+                </td>
+                <td>
+                  <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1"
+                    max="{{ item.product.stock }}" class="quantity-input" />
+                </td>
+                <td>
+                  <div class="subtotal">Rs {{ item.get_total_price }}</div>
+                </td>
+                <td>
+                  <a href="{% url 'remove_from_cart' item.id %}" class="remove-btn"
+                    onclick="return confirm('Are you sure you want to remove this item from your cart?');">
+                    <i class="fa-solid fa-trash"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if items %}
+          <div class="cart-actions">
+            <a href="{% url 'index' %}" class="continue-shopping">
+              ← Continue Shopping
+            </a>
+            <button formaction="{% url 'update_cart' %}" type="submit" class="update-cart">
+              <i class="fa-solid fa-rotate"></i> Update Cart
+            </button>
+          </div>
+          {% endif %}
         </div>
-        {% endif %}
+        <div class="checkout-sidebar">
+          <div class="summary-card">
+            <div class="summary-row">
+              <span class="summary-label">Subtotal</span>
+              <span class="summary-value" id="cart-subtotal">Rs 0.00</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Shipping</span>
+              <span class="summary-value">Free</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Total</span>
+              <span class="summary-value" id="cart-total">Rs 0.00</span>
+            </div>
+            <button type="submit" class="checkout-btn">
+              Proceed to Checkout →
+            </button>
+          </div>
+        </div>
       </form>
-    </div>
-
-    <div class="checkout-sidebar">
-      <div class="summary-card">
-        <div class="summary-row">
-          <span class="summary-label">Subtotal</span>
-          <span class="summary-value" id="cart-subtotal">Rs {{ total }}</span>
-        </div>
-        <div class="summary-row">
-          <span class="summary-label">Shipping</span>
-          <span class="summary-value">Free</span>
-        </div>
-        <div class="summary-row">
-          <span class="summary-label">Total</span>
-          <span class="summary-value" id="cart-total">Rs {{ total }}</span>
-        </div>
-        <a href="{% url "checkout" %}" class="checkout-btn">Proceed to Checkout →</a>
-
-      </div>
     </div>
   </div>
 </div>

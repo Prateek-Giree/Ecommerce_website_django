@@ -52,7 +52,8 @@
           <!-- Remove from wishlist button -->
           <form method="POST" action="{% url 'remove_from_wishlist' item.product.id %}">
             {% csrf_token %}
-            <button class="remove-btn" type="submit">×</button>
+            <button onclick="return confirm('Are you sure want to cancel?')"
+             class="remove-btn" type="submit">×</button>
           </form>
         </div>
       </div>
