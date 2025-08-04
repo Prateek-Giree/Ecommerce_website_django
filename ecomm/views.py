@@ -26,8 +26,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 import random
 from django.db.models import Q
-from .quick_sort import quicksort_products
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .quick_sort import quicksort_products
+from .searching_algo import linear_search_partial
 
 
 
@@ -312,7 +313,7 @@ def cart(request):
 # =============================================================
 
 
-@login_required
+@login_required(login_url="login")
 def remove_from_cart(request, pk):
     if not request.user.is_authenticated:
         messages.error(
@@ -334,7 +335,7 @@ def remove_from_cart(request, pk):
 # =============================================================
 
 
-@login_required
+@login_required(login_url="login")
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     cart, _ = Cart.objects.get_or_create(user=request.user)
@@ -382,7 +383,7 @@ def add_to_cart(request, product_id):
 # =============================================================
 
 
-@login_required
+@login_required(login_url="login")
 def clear_cart(request):
     cart = Cart.objects.filter(user=request.user).first()
     if cart:
@@ -397,7 +398,7 @@ def clear_cart(request):
 # =============================================================
 
 
-@login_required
+@login_required(login_url="login")
 @require_POST
 def update_cart(request):
     cart = get_object_or_404(Cart, user=request.user)
@@ -444,7 +445,7 @@ def category_page(request, pk):
 # =============================================================
 
 
-@login_required
+@login_required(login_url="login")
 def add_to_wishlist(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     wishlist_item, created = Wishlist.objects.get_or_create(
@@ -460,7 +461,7 @@ def add_to_wishlist(request, product_id):
 
 # =============================================================
 
-@login_required
+@login_required(login_url="login")
 def remove_from_wishlist(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     Wishlist.objects.filter(user=request.user, product=product).delete()
@@ -470,7 +471,7 @@ def remove_from_wishlist(request, product_id):
 
 # =============================================================
 
-@login_required
+@login_required(login_url="login")
 def wishlist(request):
     wishlist_items = Wishlist.objects.filter(user=request.user).select_related(
         "product"
@@ -513,7 +514,7 @@ def cancel_order(request, order_id):
     return redirect("view_order")
 # =============================================================
 
-@login_required
+@login_required(login_url="login")
 def checkout_view(request):
     user = request.user
 
@@ -743,3 +744,43 @@ def product_filter(request):
         'page_obj': paginated_products,
     }
     return render(request, 'ecomm/filter_search.html', context)
+
+
+
+def category_filter(request):
+    selected_category_id = request.GET.get("category")
+    categories = Category.objects.order_by('name')
+
+    if selected_category_id:
+        products = Product.objects.filter(category__id=selected_category_id)
+        current_category = Category.objects.filter(id=selected_category_id).first()
+    else:
+        products = Product.objects.all()
+        current_category = None
+
+    context = {
+        'categories': categories,
+        'products': products,
+        'current_category': current_category
+    }
+    return render(request, "ecomm/category_filter.html", context)
+
+def product_search(request):
+    query = request.GET.get("q", "").strip()
+    product_list = Product.objects.all()
+    product_list = list(product_list)  # convert queryset to list
+
+    results = linear_search_partial(product_list, query) if query else []
+
+    context = {
+        "query": query,
+        "results": results,
+    }
+
+    if query:
+        if results:
+            messages.success(request, f"{len(results)} result(s) found for '{query}'")
+        else:
+            messages.warning(request, f"No product found for '{query}'")
+
+    return render(request, "ecomm/search_product.html", context)

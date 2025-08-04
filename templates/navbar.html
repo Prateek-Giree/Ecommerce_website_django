@@ -24,17 +24,12 @@
 <header class="main-header">
   <div class="container">
     <div class="header-content">
-      <a href=" {% url "index" %} " class="logo"> <img src=" {% static "assets/logo.png" %} " alt="FastCart"> </a>
+      <a href=" {% url 'index' %} " class="logo"> <img src=" {% static 'assets/logo.png' %} " alt="FastCart"> </a>
 
-      <div class="search-bar">
-        <select>
-          <option>All Categories</option>
-          <option>Groceries</option>
-          <option>Fresh</option>
-        </select>
-        <input type="search" placeholder="Search for items..." />
-        <button type="submit">Search</button>
-      </div>
+   <form action="{% url 'search_product' %}" method="get" class="search-bar">
+      <input type="search" name="q" placeholder="Search for items..."  required />
+      <button type="submit">Search</button>
+  </form>
 
       <div class="location-cart">
         <div class="cart-icons">
@@ -54,23 +49,17 @@
     </div>
 
     <nav class="main-nav">
-      <div>
-        <select class="browse-btn">
-          <option disabled selected >Browse Categories</option>
-          <option>Groceries</option>
-          <option>Fresh</option>
-        </select>
-      </div>
+  
       <div class="nav-links">
         <a href="#">Deals</a>
-        <a href="{% url "index" %}">Home</a>
-        <a href="#">Category</a>
+        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'category_filter' %}">Category</a>
         <a href="#">Shop</a>
         <a href="#">Vendors</a>
-        <a href="#">Mega menu</a>
-        <a href="#">Blog</a>
-        <a href="#">Pages</a>
-        <a href="{% url "about" %}#contact">Contact</a>
+        <a href="{% url 'filter_search' %}">Mega menu</a>
+        <!-- <a href="#">Blog</a> -->
+        <!-- <a href="#">Pages</a> -->
+        <a href="{% url 'about' %}#contact">Contact</a>
       </div>
      
       <div class="support">

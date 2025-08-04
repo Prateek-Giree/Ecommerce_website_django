@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}FastCart | Search{% endblock title %}
+{% block body %}
+
+<div class="search-main-content">
+    {% if results %}
+
+    <div class="prod-card">
+        {% for product in results %}
+        <div class="product-grid">
+            <!-- Loop through the recent products -->
+            <div class="product-item">
+                {% if product.new_price %}
+                <small class="off">
+                    -{{ product.discount_percentage|floatformat:0 }}%
+                </small>
+                {% endif %}
+                <a style="text-decoration: none" href=" {% url 'products' product.id %} ">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" />
+                    <small>{{ product.category.name }}</small>
+                    <h3>{{ product.name }}</h3>
+                </a>
+                By
+                <a style="text-decoration: none" href="">
+                    <span>{{ product.vendor.name }}</span>
+                </a>
+                <br />
+
+                <div class="price-btn">
+                    <div class="price">
+                        <span>Rs.{{ product.new_price|default:product.price }}</span>
+                        {% if product.new_price %}
+                        <p><s>Rs.{{ product.price }}</s></p>
+                        {% endif %}
+                    </div>
+                    <div class="btns">
+                        <a class="add" href="{% url 'add_to_cart' product.id %}"><i
+                                class="fa fa-cart-shopping"></i>Add</a>
+                        <a href="{% url 'add_to_wishlist' product.id %}"><i class="fa-regular fa-heart"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>No products found matching "{{ query }}".</p>
+{% endif %}
+</div>
+
+{% endblock body %}

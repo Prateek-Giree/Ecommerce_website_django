@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block title %}FastCart| Filter{% endblock title %}
+{% block body %}
+
+<div class="catalog-container">
+    <div class="catalog-sidebar">
+        <h2>Categories</h2>
+        <ul>
+            {% for category in categories %}
+            <li>
+                <a href="?category={{ category.id }}"
+                    class="catalog-category-link {% if current_category and current_category.id == category.id %}active{% endif %}">
+                    {{ category.name }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="catalog-main-content">
+        {% if current_category %}
+        <h1>{{ current_category.name }}</h1>
+        {% else %}
+        <h1>All Products</h1>
+        {% endif %}
+
+        <div class="catalog-products-grid">
+            {% for product in products %}
+            <div class="catalog-product-card">
+                <a href="{% url 'products' product.id %}">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="catalog-product-image" />
+                <h3 class="catalog-product-name">
+                    {{ product.name }}
+                </h3></a>
+            </div>
+            {% empty %}
+            <p>No products found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock body %}

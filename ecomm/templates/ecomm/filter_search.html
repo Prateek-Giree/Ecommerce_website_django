@@ -68,9 +68,9 @@
         <div class="filter-product-category">{{ product.category.name }}</div>
         <div class="filter-product-price">
           {% if product.new_price %}
-          <span class="text-line-through text-gray-500">${{ product.price }}</span>
+          <span class="text-line-through text-gray-500">Rs. {{ product.new_price }}</span>
           {% else %}
-          ${{ product.price }}
+          Rs. {{ product.price }}
           {% endif %}
         </div>
       </div>
