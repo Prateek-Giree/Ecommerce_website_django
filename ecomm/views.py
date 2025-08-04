@@ -43,7 +43,27 @@ def analytics_view(request):
 def about(request):
     return render(request, "ecomm/about_us.html")
 
+def contact(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        email = request.POST.get("email", "").strip()
+        message = request.POST.get("message", "").strip()
 
+        # Basic validation
+        if all([name, email, message]):
+            send_mail(
+                subject=f"FastCart contact form - from {name}",
+                message=f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}",
+                from_email=email,
+                recipient_list=["fastcart.onlineshop@gmail.com"],
+                fail_silently=False,
+            )
+            messages.success(request, "Message sent!")
+            return redirect("contact")
+        else:
+            messages.error(request, "Please fill in all fields.")
+
+    return render(request, "ecomm/about_us.html")
 # =============================================================
 
 
