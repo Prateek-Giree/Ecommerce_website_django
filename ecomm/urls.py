@@ -39,4 +39,6 @@ urlpatterns = [
     path('forgot-password/', views.forgot_password_request, name='forgot_password'),
     path('verify-otp/', views.verify_otp, name='verify_otp'),
     path('reset-password/', views.reset_password, name='reset_password'),
+
+    path('filter-search/',views.product_filter,name='filter_search'),
 ]

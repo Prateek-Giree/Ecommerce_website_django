@@ -132,3 +132,93 @@ function updateCartTotal() {
   document.getElementById("cart-subtotal").textContent = `Rs ${total}`;
   document.getElementById("cart-total").textContent = `Rs ${total}`;
 }
+
+//Filter and search page
+
+let allCards = [];
+let currentResults = 8;
+
+function initializeCards() {
+  allCards = Array.from(document.querySelectorAll(".product-card"));
+  updateResultsCount();
+}
+
+function updateResultsCount() {
+  const visibleCards = allCards.filter((card) => card.style.display !== "none");
+  currentResults = visibleCards.length;
+  document.querySelector(
+    ".results-info"
+  ).textContent = `Showing ${currentResults} items`;
+
+  const noResultsMsg = document.getElementById("noResultsMessage");
+  if (noResultsMsg) {
+    noResultsMsg.style.display = currentResults === 0 ? "block" : "none";
+  }
+}
+
+function applyFilters() {
+  const filterBy = document.getElementById("filterBy").value;
+  const sortBy = document.getElementById("sortBy").value;
+  const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+
+  allCards.forEach((card) => {
+    const category = card.getAttribute("data-category");
+    const name = card.getAttribute("data-name");
+
+    const matchesCategory = !filterBy || category === filterBy;
+    const matchesSearch =
+      !searchTerm || name.includes(searchTerm) || category.includes(searchTerm);
+
+    card.style.display = matchesCategory && matchesSearch ? "block" : "none";
+  });
+
+  const visibleCards = allCards.filter((card) => card.style.display !== "none");
+  const grid = document.getElementById("productsGrid");
+
+  visibleCards.sort((a, b) => {
+    switch (sortBy) {
+      case "name":
+        return a
+          .getAttribute("data-name")
+          .localeCompare(b.getAttribute("data-name"));
+      case "category":
+        return a
+          .getAttribute("data-category")
+          .localeCompare(b.getAttribute("data-category"));
+      case "price-asc":
+        return (
+          parseFloat(a.getAttribute("data-price")) -
+          parseFloat(b.getAttribute("data-price"))
+        );
+      case "price-desc":
+        return (
+          parseFloat(b.getAttribute("data-price")) -
+          parseFloat(a.getAttribute("data-price"))
+        );
+      default:
+        return 0;
+    }
+  });
+
+  visibleCards.forEach((card) => {
+    grid.appendChild(card);
+  });
+
+  updateResultsCount();
+}
+
+function searchProducts() {
+  applyFilters();
+}
+
+document.getElementById("filterBy").addEventListener("change", applyFilters);
+document.getElementById("sortBy").addEventListener("change", applyFilters);
+document
+  .getElementById("searchInput")
+  .addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      searchProducts();
+    }
+  });
+
+document.addEventListener("DOMContentLoaded", initializeCards);

@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %} FastCart | Search {% endblock title %}
+
+{% block body %}
+<div class="filter-container">
+  <form method="get" class="filter-form">
+    <div class="filter-header">
+      <div class="filter-controls">
+        <div class="filt">
+
+          <!-- Filter By Category -->
+          <div class="filter-control-group">
+            <label for="filterBy">Filter By</label>
+            <select id="filterBy" name="filterBy">
+              <option value="">All Categories</option>
+              {% for category in categories %}
+              {% with category.name|lower as cat_name %}
+              <option value="{{ cat_name }}" {% if request.GET.filterBy is cat_name %}selected{% endif %}>
+                {{ category.name }}
+              </option>
+              {% endwith %}
+              {% endfor %}
+            </select>
+          </div>
+
+
+
+          <!-- Sort By -->
+          <div class="filter-control-group">
+            <label for="sortBy">Sort By</label>
+            {% with request.GET.sortBy as sort_val %}
+            <select id="sortBy" name="sortBy">
+              <option value="id" {% if sort_val == 'id' %}selected{% endif %}>ID</option>
+              <option value="name" {% if sort_val == 'name' %}selected{% endif %}>Name</option>
+              <option value="category" {% if sort_val == 'category' %}selected{% endif %}>Category</option>
+              <option value="price-asc" {% if sort_val == 'price-asc' %}selected{% endif %}>Price Ascending</option>
+              <option value="price-desc" {% if sort_val == 'price-desc' %}selected{% endif %}>Price Descending</option>
+            </select>
+            {% endwith %}
+          </div>
+
+
+
+          <!-- Apply Button -->
+          <div class="btn-div">
+            <button type="submit" class="filter-apply-filters-btn">Apply Filters</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Result Count -->
+  <div class="filter-results-info">Fetched {{ results_count }} items</div>
+</div>
+
+<!-- Product Grid -->
+<div class="filter-products-grid" id="productsGrid">
+  {% for product in products %}
+  <a href="{% url 'products' product.id %}">
+    <div class="filter-product-card" data-category="{{ product.category.name|lower }}"
+      data-name="{{ product.name|lower }}" data-price="{{ product.new_price|default:product.price }}">
+      <div class="filter-product-image">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" />
+      </div>
+      <div class="filter-product-info">
+        <div class="filter-product-name">{{ product.name }}</div>
+        <div class="filter-product-category">{{ product.category.name }}</div>
+        <div class="filter-product-price">
+          {% if product.new_price %}
+          <span class="text-line-through text-gray-500">${{ product.price }}</span>
+          {% else %}
+          ${{ product.price }}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </a>
+  {% empty %}
+  <p>No products match your search/filter criteria.</p>
+  {% endfor %}
+</div>
+
+<!-- Pagination Controls -->
+<div class="pagination">
+
+  {% comment %} First page link {% endcomment %}
+  {% if page_obj.number > 1 %}
+  <a href="?{% if request.GET.filterBy %}filterBy={{ request.GET.filterBy }}&{% endif %}{% if request.GET.sortBy %}sortBy={{ request.GET.sortBy }}&{% endif %}page=1">First</a>
+  {% else %}
+  <span class="disabled">First</span>
+  {% endif %}
+
+  {% comment %} Previous page link {% endcomment %}
+  {% if page_obj.has_previous %}
+  <a href="?{% if request.GET.filterBy %}filterBy={{ request.GET.filterBy }}&{% endif %}{% if request.GET.sortBy %}sortBy={{ request.GET.sortBy }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+  {% else %}
+  <span class="disabled">Previous</span>
+  {% endif %}
+
+  {% comment %} Page number links {% endcomment %}
+  {% for num in paginator.page_range %}
+  {% if num == page_obj.number %}
+  <span class="current">{{ num }}</span>
+  {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %} <a href="?{% if request.GET.filterBy %}filterBy={{ request.GET.filterBy }}&{% endif %} {% if request.GET.sortBy %}sortBy={{ request.GET.sortBy }}&{% endif %}page={{ num }}">{{ num }}</a>
+    {% elif num == 1 or num == paginator.num_pages %}
+    <a href="?{% if request.GET.filterBy %}filterBy={{ request.GET.filterBy }}&{% endif %} {% if request.GET.sortBy %}sortBy={{ request.GET.sortBy }}&{% endif %}page={{ num }}">{{ num }}</a>
+    {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+    <span>...</span>
+    {% endif %}
+    {% endfor %}
+
+    {% comment %} Next page link {% endcomment %}
+    {% if page_obj.has_next %}
+    <a href="?{% if request.GET.filterBy %}filterBy={{ request.GET.filterBy }}&{% endif %} {% if request.GET.sortBy %}sortBy={{ request.GET.sortBy }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+    {% else %}
+    <span class="disabled">Next</span>
+    {% endif %}
+
+    {% comment %} Last page link {% endcomment %}
+    {% if page_obj.number < paginator.num_pages %} <a href="?{% if request.GET.filterBy %}filterBy={{ request.GET.filterBy }}&{% endif %} {% if request.GET.sortBy %}sortBy={{ request.GET.sortBy }}&{% endif %}page={{ paginator.num_pages }}">Last</a>
+      {% else %}
+      <span class="disabled">Last</span>
+      {% endif %}
+
+</div>
+
+{% endblock body %}
