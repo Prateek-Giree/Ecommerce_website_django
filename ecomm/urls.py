@@ -8,7 +8,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path("", views.index, name="index"),
     path("about", views.about, name="about"),
-    
+
     path("products/<int:pk>/", views.products, name="products"),
 
     path("register/", views.register, name="register"),
@@ -35,4 +35,8 @@ urlpatterns = [
     path('checkout/', views.checkout_view, name='checkout'),
     path("orders/", views.view_order, name="view_order"),
     path("orders/cancel/<int:order_id>/", views.cancel_order, name="cancel_order"),
+
+    path('forgot-password/', views.forgot_password_request, name='forgot_password'),
+    path('verify-otp/', views.verify_otp, name='verify_otp'),
+    path('reset-password/', views.reset_password, name='reset_password'),
 ]

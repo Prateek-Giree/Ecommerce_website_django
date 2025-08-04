@@ -6,6 +6,7 @@ from .models import (
     Wishlist,
     DeliveryAddress,
     UserProfile,
+    PasswordResetOTP,
 )
 from django.db.models import Count
 from .models import Order, OrderItem, CartItem
@@ -22,6 +23,8 @@ from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import send_mail
+import random
 
 
 # =============================================================
@@ -451,6 +454,7 @@ def add_to_wishlist(request, product_id):
 
     return redirect(request.META.get("HTTP_REFERER", "index"))
 
+# =============================================================
 
 @login_required
 def remove_from_wishlist(request, product_id):
@@ -460,6 +464,7 @@ def remove_from_wishlist(request, product_id):
 
     return redirect("wishlist")
 
+# =============================================================
 
 @login_required
 def wishlist(request):
@@ -484,7 +489,7 @@ def view_order(request):
         "orders": orders,
     }
     return render(request, "ecomm/order.html", context)
-
+# =============================================================
 
 @login_required(login_url="login")
 def cancel_order(request, order_id):
@@ -502,7 +507,7 @@ def cancel_order(request, order_id):
         messages.error(request, "Only pending orders can be cancelled.")
 
     return redirect("view_order")
-
+# =============================================================
 
 @login_required
 def checkout_view(request):
@@ -589,3 +594,103 @@ def checkout_view(request):
         "cart_items": cart_items,
         "selected_ids": selected_ids,
     })
+# =============================================================
+
+def forgot_password_request(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            messages.error(request, "No user found with this email.")
+            return redirect('forgot_password')
+
+        # Generate 6 digit OTP
+        otp = str(random.randint(100000, 999999))
+        # Save OTP to DB
+        PasswordResetOTP.objects.create(user=user, otp=otp)
+
+        send_mail(
+        subject='FastCart Password Reset OTP',
+        message=(
+                f"Dear User,\n\n"
+                f"We received a request to reset your password for your FastCart account.\n\n"
+                f"Your One-Time Password (OTP) is: {otp}\n"
+                f"This OTP is valid for 10 minutes.\n\n"
+                f"If you did not request a password reset, please ignore this email.\n\n"
+                f"Regards,\n"
+                f"The FastCart Team"
+            ),
+        from_email='FastCart <fastcart.onlineshop@gmail.com>',
+        recipient_list=[email],
+        fail_silently=False,
+        )
+
+        request.session['reset_email'] = email  # Save email in session for verification step
+        messages.success(request, "OTP sent to your email.")
+        return redirect('verify_otp')
+
+    return render(request, 'account/forgot_password.html')
+# =============================================================
+
+def verify_otp(request):
+    if request.method == "POST":
+        otp_input = request.POST.get('otp')
+        email = request.session.get('reset_email')
+
+        if not email:
+            messages.error(request, "Session expired. Please try again.")
+            return redirect('forgot_password')
+
+        try:
+            user = User.objects.get(email=email)
+            otp_obj = PasswordResetOTP.objects.filter(user=user, is_verified=False).latest('created_at')
+        except (User.DoesNotExist, PasswordResetOTP.DoesNotExist):
+            messages.error(request, "Invalid request. Please try again.")
+            return redirect('forgot_password')
+
+        if otp_obj.is_expired():
+            messages.error(request, "OTP expired. Please request a new one.")
+            otp_obj.delete()
+            return redirect('forgot_password')
+
+        if otp_obj.otp == otp_input:
+            otp_obj.is_verified = True
+            otp_obj.save()
+            request.session['otp_verified_email'] = email  # Mark verified session for password reset
+            messages.success(request, "OTP verified. You can now reset your password.")
+            return redirect('reset_password')
+        else:
+            messages.error(request, "Invalid OTP. Please try again.")
+            return redirect('verify_otp')
+    
+    return render(request, 'account/verify_otp.html')
+# =============================================================
+
+def reset_password(request):
+    email = request.session.get('otp_verified_email')
+    if not email:
+        messages.error(request, "Unauthorized access.")
+        return redirect('forgot_password')
+
+    if request.method == "POST":
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+            return redirect('reset_password')
+
+        user = User.objects.get(email=email)
+        user.set_password(password)
+        user.save()
+
+        # Clean up session
+        del request.session['reset_email']
+        del request.session['otp_verified_email']
+
+        messages.success(request, "Password reset successful. You can now login.")
+        return redirect('login')
+
+    return render(request, 'account/password_reset.html')
+

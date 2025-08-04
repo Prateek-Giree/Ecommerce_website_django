@@ -1,0 +1,76 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static "css/pass_reset.css" %}" />
+    <title>Verify OTP</title>
+  </head>
+  <body>
+    <div class="verification-container">
+      <div class="floating-shapes"></div>
+
+      <div class="logo-section">
+        <div class="logo">FastCart</div>
+      </div>
+
+      <div class="security-icon">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.6 14.8,10V11C15.4,11 16,11.4 16,12V16C16,16.6 15.6,17 15,17H9C8.4,17 8,16.6 8,16V12C8,11.4 8.4,11 9,11V10C9,8.6 10.6,7 12,7M12,8.2C11.2,8.2 10.2,9.2 10.2,10V11H13.8V10C13.8,9.2 12.8,8.2 12,8.2Z"
+          />
+        </svg>
+      </div>
+
+      <h1 class="page-title">Verify Your Account</h1>
+      <p class="page-description">
+        We've sent a 6-digit verification code to your registered mobile number.
+        Please enter it below to continue.
+      </p>
+
+      <form method="POST" class="otp-form">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="otp" class="form-label">Enter 6-Digit OTP</label>
+          <div class="otp-input-container">
+            <input
+              type="text"
+              id="otp"
+              name="otp"
+              class="otp-input"
+              maxlength="6"
+              placeholder="000000"
+              required
+              autocomplete="one-time-code"
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="verify-button">Verify OTP</button>
+      </form>
+
+      <div class="additional-info">
+        <p style="color: #7f8c8d; margin-bottom: 10px">
+          Didn't receive the code?
+        </p>
+        <a href="{% url "forgot_password" %}" class="resend-link">Re-Try</a>
+      </div>
+    </div>
+  </body>
+  {% if messages %}
+  <script>
+    {% for message in messages %}
+    Swal.fire({
+      icon: "{{ message.tags }}",
+      title: "{{ message }}",
+      showConfirmButton: true,
+      timer: 3000,
+    });
+    {% endfor %}
+  </script>
+  {% endif %}
+</html>
