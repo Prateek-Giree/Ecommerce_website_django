@@ -1,5 +1,5 @@
-{% extends "base.html" %} {% block title %} FastCart | Login 
-{% endblock title %} {% block body %}{% load static %} 
+{% extends "base.html" %} {% block title %} FastCart | Login
+{% endblock title %} {% block body %}{% load static %}
 {% if page == "login" %}
 <section class="breadcrumb">
   <a href="{% url 'index' %}"><i class="fa fa-house"></i> Home</a>
@@ -18,20 +18,8 @@
 
       <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
-        <input
-          type="email"
-          placeholder="Email"
-          name="email"
-          onblur=""
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          name="pass"
-          onblur=""
-          required
-        />
+        <input type="email" placeholder="Email" name="email" onblur="" required />
+        <input type="password" placeholder="Password" name="pass" onblur="" required />
         <div class="form-options">
           <a href="{% url "forgot_password" %}">Forgot password?</a>
         </div>
@@ -41,127 +29,107 @@
   </div>
 </div>
 {% endif %} {% if page == "register" %}
+
 <div class="edit-container">
   <div class="page-header">
     <h1>User Registration</h1>
     <p>Please provide valid credentials</p>
   </div>
 
-  <form id="profileForm" method="POST" action="{% url 'register' %}">
-    {% csrf_token %}
+<form id="profileForm" method="POST" action="{% url 'register' %}" onsubmit="return validateForm()">
+  {% csrf_token %}
 
-    <!-- Personal Details Section -->
-    <div class="form-section">
-      <h2 class="section-title">Personal Details</h2>
-
-      <div class="form-info">
-        <strong>💡 Tip:</strong> Keep your information valid to ensure smooth
-        delivery and communication.
-      </div>
-
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="fullName"
-            >Full Name <span class="required">*</span></label
-          >
-          <input type="text" id="fullName" name="fullname" required />
-          <span class="error"></span>
-        </div>
-
-        <div class="form-group">
-          <label for="email"
-            >Email Address <span class="required">*</span></label
-          >
-          <input type="email" id="email" name="email" required />
-          <span class="error"></span>
-        </div>
-
-        <div class="form-group">
-          <label for="phone"
-            >Phone Number <span class="required">*</span></label
-          >
-          <input type="tel" id="phone" name="phone" required />
-          <span class="error"></span>
-        </div>
-
-        <div class="form-group">
-          <label for="deliveryAddress">Default Delivery Address</label>
-          <select id="deliveryAddress" name="delivery_addr">
-            <option disabled selected>Select Delivery Address</option>
-            {% for addr in delivery_addresses %}
-            <option value="{{ addr.id }}">{{ addr.location }}</option>
-            {% endfor %}
-          </select>
-          <span class="error"></span>
-        </div>
-
-        <div class="form-group full-width">
-          <label for="address"
-            >Primary Address <span class="required">*</span></label
-          >
-          <textarea id="address" name="address" required></textarea>
-          <span class="error"></span>
-        </div>
-      </div>
+  <!-- Personal Details Section -->
+  <div class="form-section">
+    <h2 class="section-title">Personal Details</h2>
+    <div class="form-info">
+      <strong>💡 Tip:</strong> Keep your information valid to ensure smooth delivery and communication.
     </div>
 
-    <!-- Password Section -->
-    <div class="form-section">
-      <h2 class="section-title">Password</h2>
-
-      <div class="form-info">
-        <strong>🔒 Security:</strong> Choose a strong password with at least 8
-        characters, including uppercase, lowercase, numbers, and special
-        characters.
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="fullName">Full Name <span class="required">*</span></label>
+        <input type="text" id="fullName" name="fullname" onblur="nameValidation('fullName','nameErr')" required />
+        <span class="error" id="nameErr"></span>
       </div>
 
       <div class="form-group">
-        <label for="newPassword"
-          >Password <span class="required">*</span></label
-        >
-        <div class="input-group">
-          <input type="password" id="newPassword" name="pass" required />
-          <span class="input-icon" onclick="togglePassword('newPassword')"
-            ><i class="fa-solid fa-eye"></i></span
-          >
-          <span class="error"></span>
-        </div>
-        <div class="password-strength" id="passwordStrength">
-          <div class="strength-bar">
-            <div class="strength-fill"></div>
-          </div>
-          <br />
-          <span class="strength-text">Password strength: Not entered</span>
-        </div>
-        <div class="password-help">
-          Password must be at least 8 characters long and contain uppercase,
-          lowercase, numbers, and special characters.
-        </div>
+        <label for="email">Email Address <span class="required">*</span></label>
+        <input type="email" id="email" name="email" onblur="emailValidation('email','emailErr')" required />
+        <span class="error" id="emailErr"></span>
       </div>
 
       <div class="form-group">
-        <label for="confirmPassword"
-          >Confirm New Password <span class="required">*</span></label
-        >
-        <div class="input-group">
-          <input type="password" id="confirmPassword" name="cpass" required />
-          <span class="input-icon" onclick="togglePassword('confirmPassword')"
-            ><i class="fa-solid fa-eye"></i></span
-          >
-          <span class="error"></span>
+        <label for="phone">Phone Number <span class="required">*</span></label>
+        <input type="tel" id="phone" name="phone" onblur="contactValidation('phone','phoneErr')" required />
+        <span class="error" id="phoneErr"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="deliveryAddress">Default Delivery Address</label>
+        <select id="deliveryAddress" name="delivery_addr">
+          <option disabled selected>Select Delivery Address</option>
+          {% for addr in delivery_addresses %}
+          <option value="{{ addr.id }}">{{ addr.location }}</option>
+          {% endfor %}
+        </select>
+        <span class="error"></span>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="address">Primary Address <span class="required">*</span></label>
+        <textarea id="address" name="address" onblur="addressValidation('address','adddressErr')" required></textarea>
+        <span class="error" id="adddressErr"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Section -->
+  <div class="form-section">
+    <h2 class="section-title">Password</h2>
+
+    <div class="form-info">
+      <strong>🔒 Security:</strong> Choose a strong password with at least 8 characters, including uppercase, lowercase, numbers, and special characters.
+    </div>
+
+    <div class="form-group">
+      <label for="newPassword">Password <span class="required">*</span></label>
+      <div class="input-group">
+        <input type="password" id="newPassword" name="pass" onblur="passwordValidation('newPassword','newPassErr')" required />
+        <span class="input-icon" onclick="togglePassword('newPassword')"><i class="fa-solid fa-eye"></i></span>
+        <span class="error" id="newPassErr"></span>
+      </div>
+
+      <div class="password-strength" id="passwordStrength">
+        <div class="strength-bar">
+          <div class="strength-fill"></div>
         </div>
-        <div id="passwordMatch" class="password-help"></div>
+        <br />
+        <span class="strength-text">Password strength: Not entered</span>
+      </div>
+      <div class="password-help">
+        Password must be at least 8 characters long and contain uppercase, lowercase, numbers, and special characters.
       </div>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="btn-group">
-      <button type="button" class="btn btn-secondary" onclick="resetForm()">
-        Cancel
-      </button>
-      <button type="submit" class="btn btn-primary">Register</button>
+    <div class="form-group">
+      <label for="confirmPassword">Confirm New Password <span class="required">*</span></label>
+      <div class="input-group">
+        <input type="password" id="confirmPassword" name="cpass" onblur="checkPass('confirmPassword','newPassword','confirmPassErr')" required />
+        <span class="input-icon" onclick="togglePassword('confirmPassword')"><i class="fa-solid fa-eye"></i></span>
+        <span class="error" id="confirmPassErr"></span>
+      </div>
+      <div id="passwordMatch" class="password-help"></div>
     </div>
-  </form>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="btn-group">
+    <button type="button" class="btn btn-secondary" onclick="resetForm()">Cancel</button>
+    <button type="submit" class="btn btn-primary">Register</button>
+  </div>
+</form>
+
 </div>
 
 {% endif %} {% endblock %}

@@ -134,6 +134,10 @@ class Order(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
     date_ordered = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.user.username}'s order ({self.user.userprofile.delivery_address})"
+
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
