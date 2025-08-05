@@ -43,6 +43,8 @@ urlpatterns = [
 
     path('filter-search/',views.product_filter,name='filter_search'),
     path('category-filter/',views.category_filter,name='category_filter'),
-    path('search-product/',views.product_search, name='search_product')
+    path('search-product/',views.product_search, name='search_product'),
+
+    path('analytics/', views.analytics_view, name='admin-analytics'),
 
 ]

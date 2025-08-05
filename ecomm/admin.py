@@ -30,6 +30,7 @@ class DeliveryAddressAdmin(admin.ModelAdmin):
 admin.site.register(Category,CategoryAdmin)
 admin.site.register(DeliveryAddress,DeliveryAddressAdmin)
 admin.site.register(Product, ProductAdmin)
+admin.site.register(Order)
 
 
 # admin.site.register(Wishlist)
@@ -37,5 +38,4 @@ admin.site.register(Product, ProductAdmin)
 # admin.site.register(UserProfile)
 # admin.site.register(Cart)
 # admin.site.register(CartItem)
-admin.site.register(Order)
 # admin.site.register(OrderItem)

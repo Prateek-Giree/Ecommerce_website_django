@@ -29,6 +29,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .quick_sort import quicksort_products
 from .searching_algo import linear_search_partial
+from django.db.models import Sum, Count,F,FloatField
 
 
 
@@ -804,3 +805,30 @@ def product_search(request):
             messages.warning(request, f"No product found for '{query}'")
 
     return render(request, "ecomm/search_product.html", context)
+
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+@staff_member_required
+def analytics_view(request):
+    products_per_category = Product.objects.values('category__name').annotate(
+        product_count=Count('id')
+    ).order_by('category__name')
+
+    sales_per_category = OrderItem.objects.values('product__category__name').annotate(
+        total_revenue=Sum(F('price') * F('quantity'), output_field=FloatField())
+    ).order_by('product__category__name')
+
+    total_products = Product.objects.count()
+    total_users = User.objects.count()
+    total_orders = Order.objects.count()
+
+    context = {
+        'products_per_category': products_per_category,
+        'sales_per_category': sales_per_category,
+        'total_products': total_products,
+        'total_users': total_users,
+        'total_orders': total_orders,
+    }
+    return render(request, 'analytics/analytics.html', context)

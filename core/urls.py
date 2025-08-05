@@ -5,7 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin_dashboard/', admin.site.urls),
+    path('admin-dashboard/', admin.site.urls),
     path('', include('ecomm.urls')),
 ]
 

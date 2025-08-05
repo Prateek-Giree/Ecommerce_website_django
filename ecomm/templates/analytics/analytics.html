@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+{% endblock head %}
+
+{% block body %}
+
+
+<div class="chart-container">
+
+<div class="totals-container" style="display: flex; gap: 2rem; margin-bottom: 2rem;">
+  <div class="total-box" style="background: #f0f4f8; padding: 1rem 2rem; border-radius: 8px; text-align: center; flex: 1;">
+    <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem;">Total Products</h3>
+    <p style="font-size: 1.5rem; color: #2c7a7b;">{{ total_products }}</p>
+  </div>
+
+  <div class="total-box" style="background: #f0f4f8; padding: 1rem 2rem; border-radius: 8px; text-align: center; flex: 1;">
+    <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem;">Total Users</h3>
+    <p style="font-size: 1.5rem; color: #2c7a7b;">{{ total_users }}</p>
+  </div>
+
+  <div class="total-box" style="background: #f0f4f8; padding: 1rem 2rem; border-radius: 8px; text-align: center; flex: 1;">
+    <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem;">Total Orders</h3>
+    <p style="font-size: 1.5rem; color: #2c7a7b;">{{ total_orders }}</p>
+  </div>
+</div>
+
+    <div class="analytics-chart-container">
+        <h2 class="analytics-title">Products per Category</h2>
+        <canvas id="productsBarChart" class="w-full max-h-96"></canvas>
+    </div>
+
+    <div class="analytics-chart-container">
+        <h2 class="analytics-title">Sales per Category</h2>
+        <canvas id="salesPieChart" class="w-full max-h-96"></canvas>
+    </div>
+</div>
+    <script>
+      function generateColors(num) {
+        const colors = [];
+        for (let i = 0; i < num; i++) {
+          const hue = Math.floor((360 / num) * i);
+          colors.push(`hsl(${hue}, 70%, 70%)`);
+        }
+        return colors;
+      }
+
+      const productsLabels = [{% for cat in products_per_category %}'{{ cat.category__name|escapejs }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+      const productsData = [{% for cat in products_per_category %}{{ cat.product_count }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+
+      const productsBarCtx = document.getElementById('productsBarChart').getContext('2d');
+      new Chart(productsBarCtx, {
+        type: 'bar',
+        data: {
+          labels: productsLabels,
+          datasets: [{
+            label: 'Number of Products',
+            data: productsData,
+            backgroundColor: generateColors(productsLabels.length),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: 'Products Count' }
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          },
+          maintainAspectRatio: false
+        }
+      });
+
+      const salesLabels = [{% for cat in sales_per_category %}'{{ cat.product__category__name|escapejs }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+      const salesData = [{% for cat in sales_per_category %}{{ cat.total_revenue|floatformat:2 }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+
+      const salesPieCtx = document.getElementById('salesPieChart').getContext('2d');
+      const pieColors = generateColors(salesLabels.length);
+
+      new Chart(salesPieCtx, {
+        type: 'pie',
+        data: {
+          labels: salesLabels,
+          datasets: [{
+            data: salesData,
+            backgroundColor: pieColors,
+            borderColor: pieColors.map(c => c.replace('70%', '50%')),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { position: 'right' }
+          },
+          maintainAspectRatio: false
+        }
+      });
+    </script>
+{% endblock %}

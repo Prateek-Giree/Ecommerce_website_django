@@ -3105,7 +3105,7 @@ input[type="text"]:focus {
   gap: 25px;
 }
 .catalog-products-grid a {
-text-decoration: none;
+  text-decoration: none;
 }
 .catalog-product-card {
   background: white;
@@ -3149,10 +3149,32 @@ text-decoration: none;
   margin-bottom: 12px;
 }
 
-.prod-card{
+.prod-card {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
   margin: 20px auto;
+}
+
+
+.chart-container{
+  width: 100%;
+  padding: 5rem;
+  display: flex;
+  gap: 2rem;
+  flex-direction: column;
+}
+.analytics-chart-container {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+h2.analytics-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
