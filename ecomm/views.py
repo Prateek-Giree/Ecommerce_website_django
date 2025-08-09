@@ -30,6 +30,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .quick_sort import quicksort_products
 from .searching_algo import linear_search_partial
 from django.db.models import Sum, Count,F,FloatField
+from django.db.models.functions import TruncMonth
+from django.contrib.auth import get_user_model
 
 
 
@@ -807,9 +809,8 @@ def product_search(request):
     return render(request, "ecomm/search_product.html", context)
 
 
-from django.contrib.auth import get_user_model
-User = get_user_model()
 
+User = get_user_model()
 @staff_member_required
 def analytics_view(request):
     products_per_category = Product.objects.values('category__name').annotate(
@@ -820,15 +821,44 @@ def analytics_view(request):
         total_revenue=Sum(F('price') * F('quantity'), output_field=FloatField())
     ).order_by('product__category__name')
 
+    stock_per_category = Product.objects.values('category__name').annotate(
+        total_stock=Sum('stock')
+    ).order_by('category__name')
+
+    # Users per month
+    users_per_month = User.objects.annotate(month=TruncMonth('date_joined')).values('month').annotate(
+        count=Count('id')
+    ).order_by('month')
+
+    # Sales over time (monthly revenue)
+    sales_over_time = Order.objects.annotate(month=TruncMonth('date_ordered')).values('month').annotate(
+        total_sales=Sum('total_price')
+    ).order_by('month')
+
+    # Top 5 products sold
+    top_products_sold = OrderItem.objects.values('product__name').annotate(
+        total_sold=Sum('quantity')
+    ).order_by('-total_sold')[:5]
+
+    # Low stock alerts (threshold = 10 units)
+    low_stock_products = Product.objects.filter(stock__lt=10).order_by('stock')
+
     total_products = Product.objects.count()
     total_users = User.objects.count()
     total_orders = Order.objects.count()
+    total_category=Category.objects.count()
 
     context = {
         'products_per_category': products_per_category,
         'sales_per_category': sales_per_category,
+        'stock_per_category': stock_per_category,
+        'users_per_month': users_per_month,
+        'sales_over_time': sales_over_time,
+        'top_products_sold': top_products_sold,
+        'low_stock_products': low_stock_products,
         'total_products': total_products,
         'total_users': total_users,
         'total_orders': total_orders,
+        'total_category':total_category
     }
     return render(request, 'analytics/analytics.html', context)

@@ -1,49 +1,147 @@
-{% extends "base.html" %}
-
-
-{% block head %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics Dashboard</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-{% endblock head %}
-
-{% block body %}
-
+{% extends "base.html" %} {% block head %}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Analytics Dashboard</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+{% endblock head %} {% block body %}
 
 <div class="chart-container">
+  <div class="totals-container" style="display: flex; gap: 2rem; margin-bottom: 2rem" >
+    <div
+      class="total-box"
+      style="
+        background: #f0f4f8;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        text-align: center;
+        flex: 1;
+      "
+    >
+      <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem">
+        Total Products
+      </h3>
+      <p style="font-size: 1.5rem; color: #2c7a7b">{{ total_products }}</p>
+    </div>
 
-<div class="totals-container" style="display: flex; gap: 2rem; margin-bottom: 2rem;">
-  <div class="total-box" style="background: #f0f4f8; padding: 1rem 2rem; border-radius: 8px; text-align: center; flex: 1;">
-    <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem;">Total Products</h3>
-    <p style="font-size: 1.5rem; color: #2c7a7b;">{{ total_products }}</p>
+    <div
+      class="total-box"
+      style="
+        background: #f0f4f8;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        text-align: center;
+        flex: 1;
+      "
+    >
+      <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem">
+        Total Users
+      </h3>
+      <p style="font-size: 1.5rem; color: #2c7a7b">{{ total_users }}</p>
+    </div>
+
+    <div
+      class="total-box"
+      style="
+        background: #f0f4f8;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        text-align: center;
+        flex: 1;
+      "
+    >
+      <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem">
+        Total Orders
+      </h3>
+      <p style="font-size: 1.5rem; color: #2c7a7b">{{ total_orders }}</p>
+    </div>
+
+      <div
+      class="total-box"
+      style="
+        background: #f0f4f8;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        text-align: center;
+        flex: 1;
+      "
+    >
+      <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem">
+        Total categories
+      </h3>
+      <p style="font-size: 1.5rem; color: #2c7a7b">{{ total_category }}</p>
+    </div>
+
+    
   </div>
 
-  <div class="total-box" style="background: #f0f4f8; padding: 1rem 2rem; border-radius: 8px; text-align: center; flex: 1;">
-    <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem;">Total Users</h3>
-    <p style="font-size: 1.5rem; color: #2c7a7b;">{{ total_users }}</p>
-  </div>
-
-  <div class="total-box" style="background: #f0f4f8; padding: 1rem 2rem; border-radius: 8px; text-align: center; flex: 1;">
-    <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem;">Total Orders</h3>
-    <p style="font-size: 1.5rem; color: #2c7a7b;">{{ total_orders }}</p>
-  </div>
-</div>
 
     <div class="analytics-chart-container">
+    <h2 class="analytics-title">User Registrations Over Time</h2>
+    <canvas id="usersLineChart" class="w-full max-h-96"></canvas>
+  </div>
+
+  <div class="sales">
+      <div class="analytics-chart-container">
+          <h2 class="analytics-title">Sales per Category</h2>
+          <canvas id="salesPieChart" class=" max-h-96"></canvas>
+        </div>
+
+      <div class="analytics-chart-container">
+          <h2 class="analytics-title">Sales Over Time</h2>
+          <canvas id="salesOverTimeChart" class="w-full max-h-96"></canvas>
+      </div>
+</div>
+
+<div class="analytics-chart-container">
+    <h2 class="analytics-title">Top 5 Products Sold</h2>
+    <canvas id="topProductsChart" class="w-full max-h-96"></canvas>
+</div>
+
+<div class="sales">
+      <div class="analytics-chart-container">
         <h2 class="analytics-title">Products per Category</h2>
         <canvas id="productsBarChart" class="w-full max-h-96"></canvas>
-    </div>
+      </div>
 
-    <div class="analytics-chart-container">
-        <h2 class="analytics-title">Sales per Category</h2>
-        <canvas id="salesPieChart" class="w-full max-h-96"></canvas>
+
+
+      <div class="analytics-chart-container">
+        <h2 class="analytics-title">Stock vs Category</h2>
+        <canvas id="stockBarChart" class="w-full max-h-96"></canvas>
     </div>
 </div>
-    <script>
+
+<div class="analytics-chart-container">
+    <h2 class="analytics-title text-red-600">Low Stock Alerts</h2>
+    <table class="min-w-full border border-gray-300 rounded-lg">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="px-4 py-2 border">Product</th>
+                <th class="px-4 py-2 border">Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in low_stock_products %}
+                <tr class="text-center {% if product.stock < 5 %}bg-red-100{% else %}bg-yellow-100{% endif %}">
+                    <td class="px-4 py-2 border">{{ product.name }}</td>
+                    <td class="px-4 py-2 border">{{ product.stock }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2" class="px-4 py-2 border text-center">No low stock products</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+
+</div>
+<script>
       function generateColors(num) {
         const colors = [];
         for (let i = 0; i < num; i++) {
@@ -106,5 +204,114 @@
           maintainAspectRatio: false
         }
       });
-    </script>
+
+
+  const userLabels = [{% for u in users_per_month %}'{{ u.month|date:"M Y" }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+  const userData = [{% for u in users_per_month %}{{ u.count }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+
+  const usersLineCtx = document.getElementById('usersLineChart').getContext('2d');
+  new Chart(usersLineCtx, {
+    type: 'line',
+    data: {
+      labels: userLabels,
+      datasets: [{
+        label: 'New Users',
+        data: userData,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Number of Users' }
+        }
+      }
+    }
+  });
+
+  const stockLabels = [{% for s in stock_per_category %}'{{ s.category__name|escapejs }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+const stockData = [{% for s in stock_per_category %}{{ s.total_stock }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+
+const stockBarCtx = document.getElementById('stockBarChart').getContext('2d');
+new Chart(stockBarCtx, {
+  type: 'bar',
+  data: {
+    labels: stockLabels,
+    datasets: [{
+      label: 'Stock Quantity',
+      data: stockData,
+      backgroundColor: generateColors(stockLabels.length),
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'Stock Units' }
+      }
+    },
+    plugins: {
+      legend: { display: false }
+    },
+    maintainAspectRatio: false
+  }
+});
+
+// Sales Over Time
+const salesTimeLabels = [{% for s in sales_over_time %}'{{ s.month|date:"M Y" }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+const salesTimeData = [{% for s in sales_over_time %}{{ s.total_sales|default:0 }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+
+new Chart(document.getElementById('salesOverTimeChart').getContext('2d'), {
+    type: 'line',
+    data: {
+        labels: salesTimeLabels,
+        datasets: [{
+            label: 'Revenue',
+            data: salesTimeData,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: true,
+            tension: 0.3
+        }]
+    },
+    options: { scales: { y: { beginAtZero: true } } }
+});
+
+// Top 5 Products Sold (Pie Chart)
+const topProductsLabels = [{% for p in top_products_sold %}'{{ p.product__name|escapejs }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+const topProductsData = [{% for p in top_products_sold %}{{ p.total_sold }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+const topProductsColors = generateColors(topProductsLabels.length);
+
+new Chart(document.getElementById('topProductsChart').getContext('2d'), {
+    type: 'pie',
+    data: {
+        labels: topProductsLabels,
+        datasets: [{
+            data: topProductsData,
+            backgroundColor: topProductsColors,
+            borderColor: topProductsColors.map(c => c.replace('70%', '50%')),
+            borderWidth: 1
+        }]
+    },
+    options: {
+        plugins: {
+            legend: { position: 'right' },
+            tooltip: { callbacks: {
+                label: function(context) {
+                    let label = context.label || '';
+                    let value = context.parsed;
+                    return `${label}: ${value} units`;
+                }
+            }}
+        },
+        maintainAspectRatio: false
+    }
+});
+
+</script>
 {% endblock %}

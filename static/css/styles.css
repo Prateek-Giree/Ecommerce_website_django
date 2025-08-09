@@ -3157,7 +3157,7 @@ input[type="text"]:focus {
   margin: 20px auto;
 }
 
-
+/*Analytics*/
 .chart-container{
   width: 100%;
   padding: 5rem;
@@ -3177,4 +3177,14 @@ h2.analytics-title {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
+}
+
+.chart-container .sales{
+  display: flex;
+  flex-direction: row;
+justify-content: space-between;
+}
+
+.sales .analytics-chart-container canvas{
+  width:80vh;
 }
