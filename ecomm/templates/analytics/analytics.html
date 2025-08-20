@@ -336,5 +336,14 @@ new Chart(document.getElementById('topProductsChart').getContext('2d'), {
     }
 });
 
+function setDateLimits() {
+  var today = new Date().toISOString().split("T")[0];
+  document.getElementById("start_date").setAttribute("max", today);
+  document.getElementById("end_date").setAttribute("max", today);
+}
+
+// run as soon as the DOM loads
+window.onload = setDateLimits;
+
 </script>
 {% endblock %}
