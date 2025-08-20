@@ -2382,6 +2382,10 @@ hr {
   font-weight: 500;
   color: #28a745;
 }
+.checkoutBtn{
+  display: flex;
+  justify-content: space-between;
+}
 
 @media (max-width: 768px) {
   body {
@@ -2491,7 +2495,7 @@ hr {
 
 .order-info {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 20px;
   margin-bottom: 15px;
 }

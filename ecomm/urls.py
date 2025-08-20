@@ -36,6 +36,9 @@ urlpatterns = [
     path('checkout/', views.checkout_view, name='checkout'),
     path("orders/", views.view_order, name="view_order"),
     path("orders/cancel/<int:order_id>/", views.cancel_order, name="cancel_order"),
+    path('esewa/success/', views.esewa_success, name='esewa_success'),
+    path('esewa/failure/', views.esewa_failure, name='esewa_failure'),
+
 
     path('forgot-password/', views.forgot_password_request, name='forgot_password'),
     path('verify-otp/', views.verify_otp, name='verify_otp'),

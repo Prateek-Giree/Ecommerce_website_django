@@ -1,0 +1,21 @@
+<form id="esewaForm" action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST" class="space-y-6">
+    <!-- Hidden Fields -->
+    <input type="hidden" id="amount" name="amount" value="{{ amount }}" required />
+    <input type="hidden" name="tax_amount" value="{{ tax_amount }}" />
+    <input type="hidden" id="total_amount" name="total_amount" value="{{ total_amount }}" required />
+    <input type="hidden" id="transaction_uuid" name="transaction_uuid" value="{{ transaction_uuid }}" required />
+    <input type="hidden" id="product_code" name="product_code" value="{{ product_code }}" required />
+    <input type="hidden" id="product_service_charge" name="product_service_charge" value="0" required />
+    <input type="hidden" id="product_delivery_charge" name="product_delivery_charge" value="0" required />
+    <input type="hidden" id="success_url" name="success_url" value="{{ success_url }}" required />
+    <input type="hidden" id="failure_url" name="failure_url" value="{{ failure_url }}" required />
+    <input type="hidden" id="signed_field_names" name="signed_field_names" value="{{ signed_field_names }}" required />
+    <input type="hidden" id="signature" name="signature" value="{{ signature }}" required />
+</form>
+
+<script>
+    // Submit automatically after page loads
+    window.onload = function () {
+        document.getElementById("esewaForm").submit();
+    };
+</script>

@@ -34,6 +34,16 @@
             <span class="order-info-label">Total Amount</span>
             <span class="order-info-value order-total-price">Rs. {{ order.total_price }}</span>
           </div>
+            <div class="order-info-item">
+            <span class="order-info-label">Payment </span>
+            <span class="order-info-value order-total-price">
+              {% if order.is_paid %}
+              Confirmed
+              {% else %}
+              Pending
+              {% endif %}            
+            </span>
+          </div>
         </div>
         <div class="order-actions">
         {% if order.status|lower == "getting ready for delivery" %}

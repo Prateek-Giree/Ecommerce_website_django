@@ -25,13 +25,18 @@ from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 import random
-from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .quick_sort import quicksort_products
 from .searching_algo import linear_search_partial
 from django.db.models import Sum, Count,F,FloatField
 from django.db.models.functions import TruncMonth
 from django.contrib.auth import get_user_model
+from django.views.decorators.csrf import csrf_exempt
+import uuid
+from django.shortcuts import render
+import base64, hmac, hashlib
+import json
+
 
 
 
@@ -537,6 +542,13 @@ def cancel_order(request, order_id):
     return redirect("view_order")
 # =============================================================
 
+def generate_signature(payload, secret):
+    message = json.dumps(payload, separators=(',', ':'))
+    signature = hmac.new(secret.encode(), message.encode(), hashlib.sha256).digest()
+    return base64.b64encode(signature).decode()
+
+# =============================================================
+
 @login_required(login_url="login")
 def checkout_view(request):
     user = request.user
@@ -551,7 +563,7 @@ def checkout_view(request):
     if request.method == "POST":
         action_type = request.POST.get("action_type")
 
-        # First POST from cart page → Save selected items
+        # Step 1: Save selected items
         if action_type == "proceed_to_checkout":
             selected_ids = request.POST.getlist("selected_items")
             if not selected_ids:
@@ -560,28 +572,36 @@ def checkout_view(request):
             request.session["checkout_selected_ids"] = selected_ids
             return redirect("checkout")
 
-        # Second POST from checkout page → Place order
+        # Step 2: Place order (COD or eSewa)
         elif action_type == "place_order":
+            payment_method = "cod" if request.POST.get("cod") == "cod" else "esewa" if request.POST.get("esewa") == "esewa" else None
+            if not payment_method:
+                messages.error(request, "Invalid payment method.")
+                return redirect("checkout")
+
             selected_ids = request.session.get("checkout_selected_ids", [])
             cart_items = cart.items.filter(id__in=selected_ids)
-
             if not cart_items.exists():
                 messages.error(request, "No valid items in cart to place order.")
                 return redirect("cart")
 
+            total_price = sum(
+                (item.product.new_price or item.product.price) * item.quantity
+                for item in cart_items
+            )
+
+            # Create Order and OrderItems
             with transaction.atomic():
                 order = Order.objects.create(
                     user=user,
                     name=user.get_full_name() or user.username,
                     address=profile.address,
-                    total_price=sum(
-                        (item.product.new_price or item.product.price) * item.quantity
-                        for item in cart_items
-                    ),
+                    total_price=total_price,
+                    status="Pending"
                 )
 
                 for item in cart_items:
-                    if item.quantity > item.product.stock:
+                    if payment_method == "cod" and item.quantity > item.product.stock:
                         messages.error(request, f"Insufficient stock for {item.product.name}.")
                         return redirect("checkout")
 
@@ -592,28 +612,55 @@ def checkout_view(request):
                         price=item.get_total_price()
                     )
 
-                    item.product.stock -= item.quantity
-                    item.product.save()
+                    if payment_method == "cod":
+                        item.product.stock -= item.quantity
+                        item.product.save()
 
-                # Remove purchased items from cart
-                cart.items.filter(id__in=selected_ids).delete()
+            # COD: finalize order
+            if payment_method == "cod":
+                cart_items.delete()
                 del request.session["checkout_selected_ids"]
-
                 messages.success(request, "Order placed successfully!")
                 return redirect("index")
 
-    # GET request → Show checkout page with selected items
+            # eSewa: prepare payment form
+            transaction_uuid = order.transaction_uuid
+            product_code = "EPAYTEST"
+            signed_field_names = "total_amount,transaction_uuid,product_code"
+            signed_string = f"total_amount={total_price},transaction_uuid={transaction_uuid},product_code={product_code}"
+            secret_key = "8gBm/:&EnhH.1/q".encode("utf-8")
+            signature = base64.b64encode(
+                hmac.new(secret_key, signed_string.encode("utf-8"), hashlib.sha256).digest()
+            ).decode("utf-8")
+            success_url = f"http://127.0.0.1:8000/esewa/success/"
+            failure_url = "http://127.0.0.1:8000/esewa/failure/"
+            context = {
+                "amount": str(total_price),
+                "tax_amount": "0",
+                "total_amount": str(total_price),
+                "transaction_uuid": transaction_uuid,
+                "product_code": product_code,
+                "product_service_charge": "0",
+                "product_delivery_charge": "0",
+                "signed_field_names": signed_field_names,
+                "signature": signature,
+                 "success_url": success_url,
+                "failure_url": failure_url,
+                
+            }
+            return render(request, "ecomm/esewa_redirect.html", context)
+
+    # GET request → Show checkout page
     selected_ids = request.session.get("checkout_selected_ids", [])
     if not selected_ids:
         messages.error(request, "No items selected for checkout.")
         return redirect("cart")
 
     cart_items = cart.items.filter(id__in=selected_ids)
-    total_price = sum(
+    cart.total_price = sum(
         (item.product.new_price or item.product.price) * item.quantity
         for item in cart_items
     )
-    cart.total_price = total_price
 
     return render(request, "ecomm/checkout.html", {
         "user": user,
@@ -623,6 +670,103 @@ def checkout_view(request):
         "selected_ids": selected_ids,
     })
 # =============================================================
+
+
+import requests
+
+
+@login_required(login_url="login")
+def esewa_success(request):
+    user = request.user
+
+    # Get encoded data from query params
+    encoded_data = request.GET.get("data")
+    if not encoded_data:
+        messages.error(request, "Missing payment data.")
+        return redirect("checkout")
+
+    # Decode Base64 -> JSON
+    try:
+        decoded_bytes = base64.b64decode(encoded_data)
+        decoded_str = decoded_bytes.decode("utf-8")
+        decoded_data = json.loads(decoded_str)
+    except Exception as e:
+        messages.error(request, f"Failed to decode payment data: {str(e)}")
+        return redirect("checkout")
+
+    # Extract transaction details
+    transaction_uuid = decoded_data.get("transaction_uuid")
+    total_amount = decoded_data.get("total_amount")
+
+    print("Transaction UUID (from decoded data):", transaction_uuid)
+    print("Total Amount (from decoded data):", total_amount)
+
+    if not transaction_uuid or not total_amount:
+        messages.error(request, "Invalid payment details.")
+        return redirect("checkout")
+
+    # Get the unpaid order using transaction_uuid (instead of order_id)
+    order = get_object_or_404(Order, transaction_uuid=transaction_uuid, user=user, is_paid=False)
+
+    # Verify payment with eSewa
+    status_url = "https://rc.esewa.com.np/api/epay/transaction/status/"
+    params = {
+        "product_code": "EPAYTEST",
+        "transaction_uuid": transaction_uuid,
+        "total_amount": total_amount,
+    }
+
+    try:
+        response = requests.get(status_url, params=params, timeout=10)
+        response.raise_for_status()
+        status_data = response.json()
+    except requests.RequestException as e:
+        messages.error(request, f"Payment verification failed: {str(e)}")
+        return redirect("checkout")
+    except ValueError:
+        messages.error(request, "Invalid response from eSewa.")
+        return redirect("checkout")
+
+    # Check payment status
+    if status_data.get("status") == "COMPLETE":
+        with transaction.atomic():
+            order.is_paid = True
+            order.status = "Pending"
+            order.save()
+
+            # Remove purchased items from cart
+            try:
+                cart = Cart.objects.get(user=user)
+                selected_ids = request.session.get("checkout_selected_ids", [])
+                if selected_ids:
+                    cart.items.filter(id__in=selected_ids).delete()
+                    del request.session["checkout_selected_ids"]
+            except Cart.DoesNotExist:
+                pass
+
+            # Deduct stock for each product
+            for item in order.items.all():
+                item.product.stock -= item.quantity
+                item.product.save()
+
+
+        messages.success(request, f"Payment successful! Ref ID: {status_data.get('ref_id')}")
+        return redirect("index")
+
+    else:
+        messages.error(request, "Payment failed or pending. Please try again.")
+        return redirect("checkout")
+
+
+@csrf_exempt
+def esewa_failure(request):
+    messages.error(request, "Payment failed or canceled.")
+    return redirect('checkout')
+
+# =============================================================
+
+
+
 
 def forgot_password_request(request):
     if request.method == "POST":

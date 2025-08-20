@@ -26,16 +26,16 @@ class DeliveryAddressAdmin(admin.ModelAdmin):
         }
 
 # Register your models here.
-# admin.site.register(Vendor)
+admin.site.register(Vendor)
 admin.site.register(Category,CategoryAdmin)
 admin.site.register(DeliveryAddress,DeliveryAddressAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Order)
 
 
-# admin.site.register(Wishlist)
-# admin.site.register(Review)
-# admin.site.register(UserProfile)
-# admin.site.register(Cart)
-# admin.site.register(CartItem)
-# admin.site.register(OrderItem)
+admin.site.register(Wishlist)
+admin.site.register(Review)
+admin.site.register(UserProfile)
+admin.site.register(Cart)
+admin.site.register(CartItem)
+admin.site.register(OrderItem)

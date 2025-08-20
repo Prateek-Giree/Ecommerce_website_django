@@ -65,7 +65,10 @@
         <p class="total-price">Total Price: Rs. {{ cart.total_price }}</p>
       </div>
 
-      <button type="submit" class="place-order-btn">Place Order</button>
+      <div class="checkoutBtn">
+        <button type="submit" class="place-order-btn" name="cod" value="cod">Pay After Delivery</button>
+        <button type="submit" class="place-order-btn" name="esewa" value="esewa">Pay with E-sewa</button>
+      </div>
     </form>
   </div>
 </div>
