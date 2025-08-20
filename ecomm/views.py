@@ -32,19 +32,10 @@ from django.db.models import Sum, Count,F,FloatField
 from django.db.models.functions import TruncMonth
 from django.contrib.auth import get_user_model
 from django.views.decorators.csrf import csrf_exempt
-import uuid
 from django.shortcuts import render
 import base64, hmac, hashlib
 import json
-
-
-
-
-# =============================================================
-@staff_member_required
-def analytics_view(request):
-    # Prepare data for charts (e.g., order stats, product sales, etc.)
-    return render(request, "ecomm/analytics.html")
+from django.utils.dateparse import parse_date
 
 
 # =============================================================
@@ -96,13 +87,13 @@ def register(request):
             messages.error(request, "Password do not match")
             return redirect("register")
 
-        # Email already registered?
+        
         if User.objects.filter(email=email).exists():
             messages.error(request, "Email is already registered")
             return redirect("register")
 
-        # Create User
-        username = email.split("@")[0]  # or use custom logic
+
+        username = email.split("@")[0]
         user = User.objects.create(
             username=username,
             email=email,
@@ -957,40 +948,65 @@ def product_search(request):
 User = get_user_model()
 @staff_member_required
 def analytics_view(request):
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+
+    order_filter = {}
+    user_filter = {}
+
+    if start_date:
+        order_filter["date_ordered__gte"] = parse_date(start_date)
+        user_filter["date_joined__gte"] = parse_date(start_date)
+
+    if end_date:
+        order_filter["date_ordered__lte"] = parse_date(end_date)
+        user_filter["date_joined__lte"] = parse_date(end_date)
+
+    # Apply filters
+    filtered_orders = Order.objects.filter(**order_filter)
+    filtered_users = User.objects.filter(**user_filter)
+
+    # -------- NON-DATE-BASED STATS --------
     products_per_category = Product.objects.values('category__name').annotate(
         product_count=Count('id')
     ).order_by('category__name')
-
-    sales_per_category = OrderItem.objects.values('product__category__name').annotate(
-        total_revenue=Sum(F('price') * F('quantity'), output_field=FloatField())
-    ).order_by('product__category__name')
 
     stock_per_category = Product.objects.values('category__name').annotate(
         total_stock=Sum('stock')
     ).order_by('category__name')
 
-    # Users per month
-    users_per_month = User.objects.annotate(month=TruncMonth('date_joined')).values('month').annotate(
-        count=Count('id')
-    ).order_by('month')
-
-    # Sales over time (monthly revenue)
-    sales_over_time = Order.objects.annotate(month=TruncMonth('date_ordered')).values('month').annotate(
-        total_sales=Sum('total_price')
-    ).order_by('month')
-
-    # Top 5 products sold
-    top_products_sold = OrderItem.objects.values('product__name').annotate(
-        total_sold=Sum('quantity')
-    ).order_by('-total_sold')[:5]
-
-    # Low stock alerts (threshold = 10 units)
     low_stock_products = Product.objects.filter(stock__lt=10).order_by('stock')
 
-    total_products = Product.objects.count()
-    total_users = User.objects.count()
-    total_orders = Order.objects.count()
-    total_category=Category.objects.count()
+    # -------- DATE-BASED SALES STATS --------
+    sales_per_category = (
+        OrderItem.objects.filter(order__in=filtered_orders)
+        .values('product__category__name')
+        .annotate(
+            total_revenue=Sum(F('price') * F('quantity'), output_field=FloatField())
+        )
+        .order_by('product__category__name')
+    )
+
+    sales_over_time = (
+        filtered_orders.annotate(month=TruncMonth('date_ordered'))
+        .values('month')
+        .annotate(total_sales=Sum('total_price'))
+        .order_by('month')
+    )
+
+    top_products_sold = (
+        OrderItem.objects.filter(order__in=filtered_orders)
+        .values('product__name')
+        .annotate(total_sold=Sum('quantity'))
+        .order_by('-total_sold')[:5]
+    )
+
+    users_per_month = (
+        filtered_users.annotate(month=TruncMonth('date_joined'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
 
     context = {
         'products_per_category': products_per_category,
@@ -1000,9 +1016,9 @@ def analytics_view(request):
         'sales_over_time': sales_over_time,
         'top_products_sold': top_products_sold,
         'low_stock_products': low_stock_products,
-        'total_products': total_products,
-        'total_users': total_users,
-        'total_orders': total_orders,
-        'total_category':total_category
+        'total_products': Product.objects.count(),
+        'total_users': filtered_users.count(),
+        'total_orders': filtered_orders.count(),
+        'total_category': Category.objects.count(),
     }
     return render(request, 'analytics/analytics.html', context)
